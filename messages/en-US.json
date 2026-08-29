@@ -8,6 +8,11 @@
     "loading": "Loading…",
     "labelo": "Labelo"
   },
+  "pwa": {
+    "pull": "Pull to refresh",
+    "release": "Release to refresh",
+    "refreshing": "Refreshing…"
+  },
   "language": {
     "label": "Language",
     "enUS": "English",

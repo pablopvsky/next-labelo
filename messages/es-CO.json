@@ -8,6 +8,11 @@
     "loading": "Cargando…",
     "labelo": "Labelo"
   },
+  "pwa": {
+    "pull": "Desliza para actualizar",
+    "release": "Suelta para actualizar",
+    "refreshing": "Actualizando…"
+  },
   "language": {
     "label": "Idioma",
     "enUS": "English",
