@@ -60,7 +60,7 @@ export default async function proxy(request: NextRequest) {
 
     if (pathname.startsWith("/login") && session.user) {
       return handleAuthkitHeaders(request, authkitHeaders, {
-        redirect: "/dashboard",
+        redirect: "/onboarding",
       });
     }
 
@@ -97,7 +97,7 @@ export default async function proxy(request: NextRequest) {
 
   if (session.user && getPathWithoutLocale(pathname) === "/") {
     return handleAuthkitHeaders(request, authkitHeaders, {
-      redirect: "/dashboard",
+      redirect: "/onboarding",
     });
   }
 

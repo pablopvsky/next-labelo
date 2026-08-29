@@ -7,5 +7,5 @@ export function getPathWithoutLocale(pathname: string): string {
 
 export function isLocaleFreeRoute(pathname: string): boolean {
   const path = getPathWithoutLocale(pathname);
-  return path.startsWith("/dashboard");
+  return path.startsWith("/dashboard") || path.startsWith("/onboarding");
 }

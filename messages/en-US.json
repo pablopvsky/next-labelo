@@ -23,6 +23,51 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "You are signed in.",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "projectsNav": "Projects",
+    "teamLabel": "Team: {name}"
+  },
+  "onboarding": {
+    "brand": "Labelo",
+    "title": "Set up your team",
+    "description": "Create a team to manage projects and labels, or join one with an invite code.",
+    "createTeam": "Create a team",
+    "joinTeam": "Join with invite code",
+    "teamName": "Team name",
+    "teamNamePlaceholder": "Design studio",
+    "inviteCode": "Invite code",
+    "inviteCodePlaceholder": "ABCD1234",
+    "continue": "Continue",
+    "back": "Back"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Open a project to move labels across the workflow.",
+    "new": "New project",
+    "newDescription": "Give your project a short name. You can add labels inside.",
+    "name": "Name",
+    "namePlaceholder": "Campaign launch",
+    "create": "Create project",
+    "emptyTitle": "No projects yet",
+    "emptyDescription": "Create your first project to start organizing labels.",
+    "taskCount": "{count, plural, one {# label} other {# labels}}",
+    "back": "All projects"
+  },
+  "tasks": {
+    "add": "Add",
+    "save": "Save",
+    "titlePlaceholder": "Label title",
+    "actions": "Label actions",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "emptyLane": "No labels in this stage"
+  },
+  "statuses": {
+    "requerimiento": "Requerimiento",
+    "analisis": "Análisis",
+    "preproduccion": "Preproducción",
+    "produccion": "Producción",
+    "divulgacion": "Divulgación",
+    "liberacion": "Liberación"
   }
 }
