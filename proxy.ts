@@ -1,13 +1,11 @@
 import {
-  AUTHKIT_REQUEST_HEADERS,
   authkit,
   applyResponseHeaders,
   handleAuthkitHeaders,
-  isAuthkitRequestHeader,
   partitionAuthkitHeaders,
 } from "@workos-inc/authkit-nextjs";
 import createIntlMiddleware from "next-intl/middleware";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { getWorkOSRedirectUri } from "@/lib/auth/workosRedirectUri";
 import {
@@ -31,32 +29,75 @@ function isAuthOrApiRoute(pathname: string): boolean {
   );
 }
 
-function applyAuthkitRequestHeaders(
-  request: NextRequest,
-  requestHeaders: Headers,
-) {
-  for (const name of [...request.headers.keys()]) {
-    if (isAuthkitRequestHeader(name)) {
-      request.headers.delete(name);
-    }
+function isWorkOSConfigured(): boolean {
+  const apiKey = process.env.WORKOS_API_KEY?.trim();
+  const clientId = process.env.WORKOS_CLIENT_ID?.trim();
+  const cookiePassword = process.env.WORKOS_COOKIE_PASSWORD?.trim();
+  return Boolean(
+    (apiKey || clientId) &&
+      cookiePassword &&
+      cookiePassword.length >= 32,
+  );
+}
+
+async function safeAuthkit(request: NextRequest) {
+  if (!isWorkOSConfigured()) {
+    console.error(
+      "[proxy] WorkOS env incomplete. Set WORKOS_API_KEY (or WORKOS_CLIENT_ID), WORKOS_COOKIE_PASSWORD (≥32), and NEXT_PUBLIC_WORKOS_REDIRECT_URI.",
+    );
+    return null;
   }
 
-  for (const headerName of AUTHKIT_REQUEST_HEADERS) {
-    const value = requestHeaders.get(headerName);
-    if (value != null) {
-      request.headers.set(headerName, value);
-    }
+  try {
+    return await authkit(request, authkitOptions(request));
+  } catch (error) {
+    console.error("[proxy] authkit failed", error);
+    return null;
   }
+}
+
+function continueWithIntl(
+  request: NextRequest,
+  authkitHeaders?: Headers,
+) {
+  if (!authkitHeaders) {
+    return handleI18nRouting(request);
+  }
+
+  const { requestHeaders, responseHeaders } = partitionAuthkitHeaders(
+    request,
+    authkitHeaders,
+  );
+
+  // Clone the request with AuthKit headers — avoid mutating request.headers.
+  const requestForIntl = new NextRequest(request, {
+    headers: requestHeaders,
+  });
+
+  const intlResponse = handleI18nRouting(requestForIntl);
+  return applyResponseHeaders(intlResponse, responseHeaders);
 }
 
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isAuthOrApiRoute(pathname)) {
-    const { session, headers: authkitHeaders } = await authkit(
-      request,
-      authkitOptions(request),
-    );
+    const result = await safeAuthkit(request);
+
+    if (!result) {
+      if (pathname.startsWith("/login")) {
+        return NextResponse.json(
+          {
+            error:
+              "Authentication is not configured. Set WorkOS environment variables in Vercel Production.",
+          },
+          { status: 503 },
+        );
+      }
+      return NextResponse.next();
+    }
+
+    const { session, headers: authkitHeaders } = result;
 
     if (pathname.startsWith("/login") && session.user) {
       return handleAuthkitHeaders(request, authkitHeaders, {
@@ -76,40 +117,29 @@ export default async function proxy(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    const { session, headers: authkitHeaders } = await authkit(
-      request,
-      authkitOptions(request),
-    );
+    const result = await safeAuthkit(request);
 
-    if (!session.user) {
-      return handleAuthkitHeaders(request, authkitHeaders, {
-        redirect: "/login",
-      });
+    if (!result?.session.user) {
+      if (result) {
+        return handleAuthkitHeaders(request, result.headers, {
+          redirect: "/login",
+        });
+      }
+      return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    return handleAuthkitHeaders(request, authkitHeaders);
+    return handleAuthkitHeaders(request, result.headers);
   }
 
-  const { session, headers: authkitHeaders } = await authkit(
-    request,
-    authkitOptions(request),
-  );
+  const result = await safeAuthkit(request);
 
-  if (session.user && getPathWithoutLocale(pathname) === "/") {
-    return handleAuthkitHeaders(request, authkitHeaders, {
+  if (result?.session.user && getPathWithoutLocale(pathname) === "/") {
+    return handleAuthkitHeaders(request, result.headers, {
       redirect: "/onboarding",
     });
   }
 
-  const { requestHeaders, responseHeaders } = partitionAuthkitHeaders(
-    request,
-    authkitHeaders,
-  );
-
-  applyAuthkitRequestHeaders(request, requestHeaders);
-
-  const intlResponse = handleI18nRouting(request);
-  return applyResponseHeaders(intlResponse, responseHeaders);
+  return continueWithIntl(request, result?.headers);
 }
 
 export const config = {

@@ -2,34 +2,45 @@ const CALLBACK_PATH = "/callback";
 
 /**
  * Resolve the WorkOS AuthKit redirect URI for the current deployment.
+ * Prefer an explicit public env var, then the request origin (so www vs apex
+ * stay correct), then Vercel production host, then localhost.
  */
 export function getWorkOSRedirectUri(requestUrl?: string | URL): string {
   const configured = process.env.NEXT_PUBLIC_WORKOS_REDIRECT_URI?.trim();
+  if (configured && isAbsoluteHttpUrl(configured)) {
+    return configured;
+  }
+
+  const fromRequest = originFromRequest(requestUrl);
+  if (fromRequest) {
+    return `${fromRequest}${CALLBACK_PATH}`;
+  }
 
   if (process.env.VERCEL_ENV === "production") {
-    if (configured) return configured;
     const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
     if (productionHost) {
-      return `https://${productionHost}${CALLBACK_PATH}`;
+      const host = productionHost.replace(/^https?:\/\//, "");
+      return `https://${host}${CALLBACK_PATH}`;
     }
-    return configured ?? "";
   }
 
   if (process.env.VERCEL_ENV === "preview") {
-    const fromRequest = originFromRequest(requestUrl);
-    if (fromRequest) {
-      return `${fromRequest}${CALLBACK_PATH}`;
-    }
-
     const vercelHost = process.env.VERCEL_URL?.trim();
     if (vercelHost) {
       return `https://${vercelHost}${CALLBACK_PATH}`;
     }
   }
 
-  if (configured) return configured;
-
   return `http://localhost:3000${CALLBACK_PATH}`;
+}
+
+function isAbsoluteHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
 }
 
 function originFromRequest(requestUrl?: string | URL): string | null {
