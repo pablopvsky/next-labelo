@@ -188,7 +188,7 @@ function StatusLane({
             required
             autoFocus
             placeholder={tTasks("titlePlaceholder")}
-            className="h-3 min-w-[160px] flex-1 rounded-md border border-gray-7 bg-gray-2 px-1 text-sm text-gray-12"
+            className="h-3 min-w-[160px] flex-1 rounded-md border border-gray-7 bg-gray-2 px-1 text-gray-12"
           />
           <Button type="submit" size="sm" isLoading={pending}>
             {tTasks("save")}

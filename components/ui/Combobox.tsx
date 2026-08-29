@@ -17,7 +17,7 @@ function ComboboxInput({
   return (
     <Combobox.Input
       data-slot="combobox-input"
-      className={cn(className)}
+      className={cn(className, "text-[17px]")}
       {...props}
     />
   );

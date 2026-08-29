@@ -496,7 +496,7 @@
     box-shadow: none;
     color: var(--aura-accents-10);
     font-family: inherit;
-    font: inherit;
+    font-size: 17px;
     height: 106px;
     padding: calc(var(--aura) * 2);
   }
@@ -533,7 +533,7 @@
     box-shadow: none;
     color: var(--aura-accents-10);
     font-family: inherit;
-    font: inherit;
+    font-size: 17px;
     height: calc(var(--aura) * 4);
     padding: calc(var(--aura) * 2);
     line-height: calc(var(--aura) * 4) px;
@@ -573,7 +573,7 @@
     background-color: var(--aura-input-bg);
     width: 100%;
     font-family: inherit;
-    font: inherit;
+    font-size: 17px;
     height: calc(var(--aura) * 4);
     padding: 0 calc(var(--aura) * 2);
     line-height: calc(var(--aura) * 4) px;
