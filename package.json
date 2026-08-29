@@ -10,7 +10,14 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "preflight": "tsx scripts/preflight.ts",
+    "dev:server": "next dev",
+    "sonar:up": "docker start sonarqube 2>/dev/null || docker run -d --name sonarqube -p 9000:9000 sonarqube:lts",
+    "sonar:setup": "sleep 45 && curl -fsS -u admin:admin -X POST \"http://localhost:9000/api/users/change_password?login=admin&previousPassword=admin&password=$npm_package_name\" && curl -fsS -u admin:$npm_package_name -X POST \"http://localhost:9000/api/user_tokens/generate?name=local-token\" | jq -r .token > .sonar-token",
+    "sonar:scan": "sonar-scanner -Dsonar.login=$(cat .sonar-token) -Dsonar.projectKey=$npm_package_name -Dsonar.host.url=http://localhost:9000",
+    "sonar:report": "curl -u admin:$npm_package_name \"http://localhost:9000/api/issues/search?componentKeys=$npm_package_name&resolved=false\" | jq '[.issues[] | {message: .message, severity: .severity, component: .component, line: .line}]' > sonar-issues.json",
+    "sonar:full": "pnpm run sonar:up && pnpm run sonar:setup && pnpm run sonar:scan"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -50,7 +57,17 @@
     "prisma": "^7.10.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
-    "typescript": "^5"
+    "typescript": "^5",
+    "sonarqube-scanner": "^4.3.5"
   },
-  "packageManager": "pnpm@10.34.5"
+  "packageManager": "pnpm@10.34.5",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "prisma",
+      "@prisma/engines",
+      "esbuild",
+      "@swc/core",
+      "@parcel/watcher"
+    ]
+  }
 }

@@ -23,6 +23,51 @@
   "dashboard": {
     "title": "Panel",
     "welcome": "Has iniciado sesión.",
-    "signOut": "Cerrar sesión"
+    "signOut": "Cerrar sesión",
+    "projectsNav": "Proyectos",
+    "teamLabel": "Equipo: {name}"
+  },
+  "onboarding": {
+    "brand": "Labelo",
+    "title": "Configura tu equipo",
+    "description": "Crea un equipo para gestionar proyectos y etiquetas, o únete con un código de invitación.",
+    "createTeam": "Crear un equipo",
+    "joinTeam": "Unirse con código",
+    "teamName": "Nombre del equipo",
+    "teamNamePlaceholder": "Estudio de diseño",
+    "inviteCode": "Código de invitación",
+    "inviteCodePlaceholder": "ABCD1234",
+    "continue": "Continuar",
+    "back": "Volver"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "subtitle": "Abre un proyecto para mover etiquetas en el flujo.",
+    "new": "Nuevo proyecto",
+    "newDescription": "Dale un nombre corto a tu proyecto. Luego puedes agregar etiquetas.",
+    "name": "Nombre",
+    "namePlaceholder": "Lanzamiento de campaña",
+    "create": "Crear proyecto",
+    "emptyTitle": "Aún no hay proyectos",
+    "emptyDescription": "Crea tu primer proyecto para empezar a organizar etiquetas.",
+    "taskCount": "{count, plural, one {# etiqueta} other {# etiquetas}}",
+    "back": "Todos los proyectos"
+  },
+  "tasks": {
+    "add": "Agregar",
+    "save": "Guardar",
+    "titlePlaceholder": "Título de la etiqueta",
+    "actions": "Acciones de etiqueta",
+    "duplicate": "Duplicar",
+    "delete": "Eliminar",
+    "emptyLane": "Sin etiquetas en esta etapa"
+  },
+  "statuses": {
+    "requerimiento": "Requerimiento",
+    "analisis": "Análisis",
+    "preproduccion": "Preproducción",
+    "produccion": "Producción",
+    "divulgacion": "Divulgación",
+    "liberacion": "Liberación"
   }
 }
