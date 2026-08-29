@@ -65,6 +65,7 @@ model TeamMember {
 }
 
 enum TaskStatus {
+  backlog
   requerimiento
   analisis
   preproduccion

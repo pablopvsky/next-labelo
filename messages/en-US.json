@@ -91,9 +91,15 @@
     "changeStatus": "Change status",
     "duplicate": "Duplicate",
     "delete": "Delete",
-    "emptyLane": "No labels in this stage"
+    "emptyLane": "No labels in this stage",
+    "emptyBacklog": "No labels in the backlog",
+    "moveToFlow": "Move to requerimiento",
+    "showBacklog": "Backlog",
+    "showFlow": "Status board",
+    "backlogCount": "{count, plural, one {# label} other {# labels}}"
   },
   "statuses": {
+    "backlog": "Backlog",
     "requerimiento": "Requerimiento",
     "analisis": "Análisis",
     "preproduccion": "Preproducción",

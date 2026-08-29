@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import {
+  ArrowRightIcon,
   CheckIcon,
   CopyIcon,
   DotsHorizontalIcon,
@@ -43,7 +44,9 @@ import {
   moveTaskAction,
 } from "@/lib/tasks/actions";
 import {
-  TASK_STATUSES,
+  BACKLOG_STATUS,
+  FLOW_STATUSES,
+  type FlowStatusValue,
   type TaskStatusValue,
 } from "@/lib/tasks/statuses";
 import { cn } from "@/utils/class-names";
@@ -54,6 +57,8 @@ export type KanbanTask = {
   status: TaskStatusValue;
   position: number;
 };
+
+type BoardView = "flow" | "backlog";
 
 const collisionDetection: CollisionDetection = (args) => {
   const pointerHits = pointerWithin(args);
@@ -71,7 +76,7 @@ function TaskCard({
   task: KanbanTask;
   onDuplicate?: () => void;
   onDelete?: () => void;
-  onChangeStatus?: (status: TaskStatusValue) => void;
+  onChangeStatus?: (status: FlowStatusValue) => void;
   overlay?: boolean;
 }) {
   const t = useTranslations("tasks");
@@ -121,7 +126,7 @@ function TaskCard({
               </ResponsiveMenuItem>
               <ResponsiveMenuSeparator />
               <ResponsiveMenuLabel>{t("changeStatus")}</ResponsiveMenuLabel>
-              {TASK_STATUSES.map((status) => {
+              {FLOW_STATUSES.map((status) => {
                 const isCurrent = status === task.status;
                 return (
                   <ResponsiveMenuItem
@@ -166,12 +171,12 @@ function StatusLane({
   onDelete,
   onChangeStatus,
 }: {
-  status: TaskStatusValue;
+  status: FlowStatusValue;
   tasks: KanbanTask[];
   projectId: string;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
-  onChangeStatus: (id: string, status: TaskStatusValue) => void;
+  onChangeStatus: (id: string, status: FlowStatusValue) => void;
 }) {
   const t = useTranslations("statuses");
   const tTasks = useTranslations("tasks");
@@ -252,6 +257,109 @@ function StatusLane({
   );
 }
 
+function BacklogList({
+  tasks,
+  projectId,
+  onPromote,
+  onDelete,
+}: {
+  tasks: KanbanTask[];
+  projectId: string;
+  onPromote: (id: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const t = useTranslations("statuses");
+  const tTasks = useTranslations("tasks");
+  const [adding, setAdding] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  return (
+    <section className="flex flex-col gap-1 rounded-md border border-gray-6 bg-gray-1 p-1">
+      <div className="flex items-center justify-between gap-1">
+        <div className="flex items-baseline gap-0.5">
+          <h2 className="text-sm font-semibold text-gray-12">{t("backlog")}</h2>
+          <span className="text-xs text-gray-11">
+            {tTasks("backlogCount", { count: tasks.length })}
+          </span>
+        </div>
+        <Button
+          type="button"
+          variant="pill"
+          size="xs"
+          onClick={() => setAdding((v) => !v)}
+        >
+          <PlusIcon className="icon" />
+          {tTasks("add")}
+        </Button>
+      </div>
+
+      {adding ? (
+        <form
+          className="flex flex-wrap items-center gap-0.5"
+          action={(formData) => {
+            startTransition(async () => {
+              await createTaskAction(null, formData);
+              setAdding(false);
+            });
+          }}
+        >
+          <input type="hidden" name="projectId" value={projectId} />
+          <input type="hidden" name="status" value={BACKLOG_STATUS} />
+          <Input
+            name="title"
+            required
+            autoFocus
+            placeholder={tTasks("titlePlaceholder")}
+            className="h-3 min-w-[160px] flex-1 rounded-md border border-gray-7 bg-gray-2 px-1 text-sm text-gray-12"
+          />
+          <Button type="submit" size="sm" isLoading={pending}>
+            {tTasks("save")}
+          </Button>
+        </form>
+      ) : null}
+
+      <ul className="flex flex-col gap-0.5">
+        {tasks.map((task) => (
+          <li
+            key={task.id}
+            className="flex items-center justify-between gap-1 rounded-md border border-gray-6 bg-gray-2 px-1 py-0.5"
+          >
+            <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-12">
+              {task.title}
+            </p>
+            <div className="flex shrink-0 items-center gap-0.5">
+              <Button
+                type="button"
+                variant="menu"
+                size="icon"
+                aria-label={tTasks("moveToFlow")}
+                title={tTasks("moveToFlow")}
+                onClick={() => onPromote(task.id)}
+              >
+                <ArrowRightIcon className="icon" />
+              </Button>
+              <Button
+                type="button"
+                variant="menu"
+                size="icon"
+                aria-label={tTasks("delete")}
+                onClick={() => onDelete(task.id)}
+              >
+                <TrashIcon className="icon" />
+              </Button>
+            </div>
+          </li>
+        ))}
+        {tasks.length === 0 ? (
+          <li className="text-xs text-gray-11 py-1 px-0.5">
+            {tTasks("emptyBacklog")}
+          </li>
+        ) : null}
+      </ul>
+    </section>
+  );
+}
+
 export function ProjectKanban({
   projectId,
   initialTasks,
@@ -259,6 +367,8 @@ export function ProjectKanban({
   projectId: string;
   initialTasks: KanbanTask[];
 }) {
+  const tTasks = useTranslations("tasks");
+  const [view, setView] = useState<BoardView>("flow");
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     initialTasks,
     (_current, next: KanbanTask[]) => next,
@@ -274,19 +384,24 @@ export function ProjectKanban({
   );
 
   const byStatus = useMemo(() => {
-    const map = Object.fromEntries(
-      TASK_STATUSES.map((status) => [status, [] as KanbanTask[]]),
-    ) as Record<TaskStatusValue, KanbanTask[]>;
+    const map = {
+      [BACKLOG_STATUS]: [] as KanbanTask[],
+      ...Object.fromEntries(
+        FLOW_STATUSES.map((status) => [status, [] as KanbanTask[]]),
+      ),
+    } as Record<TaskStatusValue, KanbanTask[]>;
     for (const task of optimisticTasks) {
       map[task.status].push(task);
     }
-    for (const status of TASK_STATUSES) {
+    map[BACKLOG_STATUS].sort((a, b) => a.position - b.position);
+    for (const status of FLOW_STATUSES) {
       map[status].sort((a, b) => a.position - b.position);
     }
     return map;
   }, [optimisticTasks]);
 
   const activeTask = optimisticTasks.find((task) => task.id === activeId);
+  const backlogTasks = byStatus[BACKLOG_STATUS];
 
   function applyMove(
     taskId: string,
@@ -337,18 +452,18 @@ export function ProjectKanban({
     const overId = String(over.id);
     const overData = over.data.current;
 
-    if (overData?.type === "column" && isStatus(overId)) {
+    if (overData?.type === "column" && isFlowStatusValue(overId)) {
       nextStatus = overId;
       nextPosition = byStatus[nextStatus].filter((item) => item.id !== taskId)
         .length;
-    } else if (overData?.type === "task" || !isStatus(overId)) {
+    } else if (overData?.type === "task" || !isFlowStatusValue(overId)) {
       const overTask = optimisticTasks.find((item) => item.id === overId);
-      if (!overTask) return;
+      if (!overTask || overTask.status === BACKLOG_STATUS) return;
       nextStatus = overTask.status;
       const column = byStatus[nextStatus].filter((item) => item.id !== taskId);
       const overIndex = column.findIndex((item) => item.id === overId);
       nextPosition = overIndex < 0 ? column.length : overIndex;
-    } else if (isStatus(overId)) {
+    } else if (isFlowStatusValue(overId)) {
       nextStatus = overId;
       nextPosition = byStatus[nextStatus].filter((item) => item.id !== taskId)
         .length;
@@ -357,11 +472,16 @@ export function ProjectKanban({
     applyMove(taskId, nextStatus, nextPosition);
   }
 
-  function onChangeStatus(taskId: string, nextStatus: TaskStatusValue) {
+  function onChangeStatus(taskId: string, nextStatus: FlowStatusValue) {
     const task = optimisticTasks.find((item) => item.id === taskId);
     if (!task || task.status === nextStatus) return;
     const nextPosition = byStatus[nextStatus].length;
     applyMove(taskId, nextStatus, nextPosition);
+  }
+
+  function onPromoteToFlow(taskId: string) {
+    const nextPosition = byStatus.requerimiento.length;
+    applyMove(taskId, "requerimiento", nextPosition);
   }
 
   function onDuplicate(taskId: string) {
@@ -378,32 +498,59 @@ export function ProjectKanban({
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={collisionDetection}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-    >
-      <div className="flex flex-col gap-1.5">
-        {TASK_STATUSES.map((status) => (
-          <StatusLane
-            key={status}
-            status={status}
-            tasks={byStatus[status]}
-            projectId={projectId}
-            onDuplicate={onDuplicate}
-            onDelete={onDelete}
-            onChangeStatus={onChangeStatus}
-          />
-        ))}
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-end">
+        <Button
+          type="button"
+          variant="pill"
+          size="sm"
+          onClick={() =>
+            setView((current) => (current === "flow" ? "backlog" : "flow"))
+          }
+        >
+          {view === "flow" ? tTasks("showBacklog") : tTasks("showFlow")}
+          {view === "flow" && backlogTasks.length > 0 ? (
+            <span className="text-xs text-gray-11">{backlogTasks.length}</span>
+          ) : null}
+        </Button>
       </div>
-      <DragOverlay>
-        {activeTask ? <TaskCard task={activeTask} overlay /> : null}
-      </DragOverlay>
-    </DndContext>
+
+      {view === "backlog" ? (
+        <BacklogList
+          tasks={backlogTasks}
+          projectId={projectId}
+          onPromote={onPromoteToFlow}
+          onDelete={onDelete}
+        />
+      ) : (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={collisionDetection}
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+        >
+          <div className="flex flex-col gap-1.5">
+            {FLOW_STATUSES.map((status) => (
+              <StatusLane
+                key={status}
+                status={status}
+                tasks={byStatus[status]}
+                projectId={projectId}
+                onDuplicate={onDuplicate}
+                onDelete={onDelete}
+                onChangeStatus={onChangeStatus}
+              />
+            ))}
+          </div>
+          <DragOverlay>
+            {activeTask ? <TaskCard task={activeTask} overlay /> : null}
+          </DragOverlay>
+        </DndContext>
+      )}
+    </div>
   );
 }
 
-function isStatus(value: string): value is TaskStatusValue {
-  return (TASK_STATUSES as readonly string[]).includes(value);
+function isFlowStatusValue(value: string): value is FlowStatusValue {
+  return (FLOW_STATUSES as readonly string[]).includes(value);
 }
