@@ -91,9 +91,15 @@
     "changeStatus": "Cambiar estado",
     "duplicate": "Duplicar",
     "delete": "Eliminar",
-    "emptyLane": "Sin etiquetas en esta etapa"
+    "emptyLane": "Sin etiquetas en esta etapa",
+    "emptyBacklog": "Sin etiquetas en el backlog",
+    "moveToFlow": "Pasar a requerimiento",
+    "showBacklog": "Backlog",
+    "showFlow": "Tablero de estados",
+    "backlogCount": "{count, plural, one {# etiqueta} other {# etiquetas}}"
   },
   "statuses": {
+    "backlog": "Backlog",
     "requerimiento": "Requerimiento",
     "analisis": "Análisis",
     "preproduccion": "Preproducción",
