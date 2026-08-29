@@ -7,7 +7,7 @@ import { getWorkOSRedirectUri } from "@/lib/auth/workosRedirectUri";
 export const GET = async () => {
   const { user } = await withAuth();
   if (user) {
-    redirect("/dashboard");
+    redirect("/onboarding");
   }
 
   const headerStore = await headers();
@@ -16,7 +16,7 @@ export const GET = async () => {
     getWorkOSRedirectUri(headerStore.get("x-url") ?? undefined);
 
   const signInUrl = await getSignInUrl({
-    returnTo: "/dashboard",
+    returnTo: "/onboarding",
     redirectUri,
   });
 

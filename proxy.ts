@@ -103,7 +103,7 @@ export default async function proxy(request: NextRequest) {
 
   const { requestHeaders, responseHeaders } = partitionAuthkitHeaders(
     request,
-    requestHeaders,
+    authkitHeaders,
   );
 
   applyAuthkitRequestHeaders(request, requestHeaders);
