@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// App user mirrored from WorkOS AuthKit. Synced on OAuth callback.
+model User {
+  id                String    @id @default(cuid())
+  workosUserId      String    @unique @map("workos_user_id")
+  email             String
+  emailVerified     Boolean   @default(false) @map("email_verified")
+  profilePictureUrl String?   @map("profile_picture_url")
+  firstName         String?   @map("first_name")
+  lastName          String?   @map("last_name")
+  lastSignInAt      DateTime? @map("last_sign_in_at")
+  locale            String?
+  metadata          Json      @default("{}")
+  workosCreatedAt   DateTime  @map("workos_created_at")
+  workosUpdatedAt   DateTime  @map("workos_updated_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@map("users")
+}

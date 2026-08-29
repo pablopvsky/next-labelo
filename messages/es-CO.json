@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "title": "Labelo",
+    "description": "Labelo — organiza etiquetas y flujos de trabajo para tu equipo."
+  },
+  "common": {
+    "skipToContent": "Saltar al contenido principal",
+    "loading": "Cargando…",
+    "labelo": "Labelo"
+  },
+  "header": {
+    "signIn": "Iniciar sesión",
+    "dashboard": "Panel"
+  },
+  "home": {
+    "title": "Bienvenido a Labelo",
+    "description": "Un espacio tranquilo para tus etiquetas y flujos. Inicia sesión para abrir tu espacio de trabajo."
+  },
+  "locale": {
+    "en": "Inglés",
+    "es": "Español"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "welcome": "Has iniciado sesión.",
+    "signOut": "Cerrar sesión"
+  }
+}

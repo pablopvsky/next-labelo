@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "title": "Labelo",
+    "description": "Labelo — organize labels and workflows for your team."
+  },
+  "common": {
+    "skipToContent": "Skip to main content",
+    "loading": "Loading…",
+    "labelo": "Labelo"
+  },
+  "header": {
+    "signIn": "Sign in",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "title": "Welcome to Labelo",
+    "description": "A calm home for your labels and workflows. Sign in to open your workspace."
+  },
+  "locale": {
+    "en": "English",
+    "es": "Spanish"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "You are signed in.",
+    "signOut": "Sign out"
+  }
+}
