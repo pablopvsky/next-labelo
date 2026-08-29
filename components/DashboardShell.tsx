@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { DashboardIcon } from "@radix-ui/react-icons";
 
-import { AccountLocaleSelect } from "@/components/AccountLocaleSelect";
+import { AccountSidebarMenu } from "@/components/dashboard/AccountSidebarMenu";
 import {
   Sidebar,
   SidebarContent,
@@ -27,11 +27,10 @@ export function DashboardShell({
   teamName?: string;
   inviteCode?: string;
 }) {
-  const { signOut } = useAuth();
+  const pathname = usePathname();
   const t = useTranslations("dashboard");
   const tCommon = useTranslations("common");
   const tOnboarding = useTranslations("onboarding");
-  const tLanguage = useTranslations("language");
 
   return (
     <SidebarProvider>
@@ -45,7 +44,7 @@ export function DashboardShell({
           ) : null}
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton asChild isActive={pathname === "/dashboard"}>
                 <Link href="/dashboard">
                   <DashboardIcon className="icon" />
                   {t("projectsNav")}
@@ -62,18 +61,10 @@ export function DashboardShell({
             </div>
           ) : null}
         </SidebarContent>
-        <SidebarFooter className="gap-1 p-2">
-          <div className="px-0.5">
-            <p className="text-xs text-gray-11 px-1.5 pb-0.5">
-              {tLanguage("label")}
-            </p>
-            <AccountLocaleSelect />
-          </div>
+        <SidebarFooter className="p-2">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton onClick={() => void signOut()}>
-                {t("signOut")}
-              </SidebarMenuButton>
+              <AccountSidebarMenu />
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>

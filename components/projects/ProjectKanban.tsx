@@ -8,19 +8,18 @@ import {
   PointerSensor,
   TouchSensor,
   closestCorners,
+  pointerWithin,
+  useDraggable,
   useDroppable,
   useSensor,
   useSensors,
+  type CollisionDetection,
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
+  CheckIcon,
   CopyIcon,
   DotsHorizontalIcon,
   PlusIcon,
@@ -28,13 +27,15 @@ import {
 } from "@radix-ui/react-icons";
 
 import { Button } from "@/components/ui/Button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
 import { Input } from "@/components/ui/Input";
+import {
+  ResponsiveMenu,
+  ResponsiveMenuContent,
+  ResponsiveMenuItem,
+  ResponsiveMenuLabel,
+  ResponsiveMenuSeparator,
+  ResponsiveMenuTrigger,
+} from "@/components/ui/ResponsiveMenu";
 import {
   createTaskAction,
   deleteTaskAction,
@@ -54,38 +55,44 @@ export type KanbanTask = {
   position: number;
 };
 
+const collisionDetection: CollisionDetection = (args) => {
+  const pointerHits = pointerWithin(args);
+  if (pointerHits.length > 0) return pointerHits;
+  return closestCorners(args);
+};
+
 function TaskCard({
   task,
   onDuplicate,
   onDelete,
+  onChangeStatus,
   overlay,
 }: {
   task: KanbanTask;
   onDuplicate?: () => void;
   onDelete?: () => void;
+  onChangeStatus?: (status: TaskStatusValue) => void;
   overlay?: boolean;
 }) {
   const t = useTranslations("tasks");
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id, data: { status: task.status } });
+  const tStatuses = useTranslations("statuses");
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: task.id,
+      data: { type: "task", status: task.status },
+      disabled: overlay,
+    });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const style = transform
+    ? { transform: CSS.Translate.toString(transform) }
+    : undefined;
 
   return (
     <div
       ref={overlay ? undefined : setNodeRef}
       style={overlay ? undefined : style}
       className={cn(
-        "w-[min(100%,220px)] shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm",
+        "w-[min(100%,220px)] shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm touch-none",
         isDragging && !overlay && "opacity-40",
         overlay && "shadow-md",
       )}
@@ -94,8 +101,8 @@ function TaskCard({
       <div className="flex items-start justify-between gap-0.5">
         <p className="text-sm font-medium text-gray-12">{task.title}</p>
         {!overlay ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <ResponsiveMenu>
+            <ResponsiveMenuTrigger asChild>
               <Button
                 type="button"
                 variant="menu"
@@ -106,23 +113,45 @@ function TaskCard({
               >
                 <DotsHorizontalIcon className="icon" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onSelect={() => onDuplicate?.()}
-              >
+            </ResponsiveMenuTrigger>
+            <ResponsiveMenuContent title={t("actions")} align="end">
+              <ResponsiveMenuItem onSelect={() => onDuplicate?.()}>
                 <CopyIcon className="icon" />
                 {t("duplicate")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
+              </ResponsiveMenuItem>
+              <ResponsiveMenuSeparator />
+              <ResponsiveMenuLabel>{t("changeStatus")}</ResponsiveMenuLabel>
+              {TASK_STATUSES.map((status) => {
+                const isCurrent = status === task.status;
+                return (
+                  <ResponsiveMenuItem
+                    key={status}
+                    disabled={isCurrent}
+                    onSelect={() => onChangeStatus?.(status)}
+                  >
+                    <span className="flex min-w-0 flex-1 items-center gap-1">
+                      <CheckIcon
+                        className={cn(
+                          "icon shrink-0",
+                          isCurrent ? "opacity-100" : "opacity-0",
+                        )}
+                        aria-hidden
+                      />
+                      <span className="truncate">{tStatuses(status)}</span>
+                    </span>
+                  </ResponsiveMenuItem>
+                );
+              })}
+              <ResponsiveMenuSeparator />
+              <ResponsiveMenuItem
                 onSelect={() => onDelete?.()}
                 className="text-[color:var(--danger-contrast)]"
               >
                 <TrashIcon className="icon" />
                 {t("delete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </ResponsiveMenuItem>
+            </ResponsiveMenuContent>
+          </ResponsiveMenu>
         ) : null}
       </div>
     </div>
@@ -135,21 +164,27 @@ function StatusLane({
   projectId,
   onDuplicate,
   onDelete,
+  onChangeStatus,
 }: {
   status: TaskStatusValue;
   tasks: KanbanTask[];
   projectId: string;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
+  onChangeStatus: (id: string, status: TaskStatusValue) => void;
 }) {
   const t = useTranslations("statuses");
   const tTasks = useTranslations("tasks");
-  const { setNodeRef, isOver } = useDroppable({ id: status });
+  const { setNodeRef, isOver } = useDroppable({
+    id: status,
+    data: { type: "column", status },
+  });
   const [adding, setAdding] = useState(false);
   const [pending, startTransition] = useTransition();
 
   return (
     <section
+      ref={setNodeRef}
       className={cn(
         "flex flex-col gap-1 rounded-md border border-gray-6 bg-gray-1 p-1",
         isOver && "border-accent-8 bg-accent-a2",
@@ -196,24 +231,19 @@ function StatusLane({
         </form>
       ) : null}
 
-      <div
-        ref={setNodeRef}
-        className="flex gap-1 overflow-x-auto pb-0.5 snap-x snap-mandatory"
-      >
-        <SortableContext
-          items={tasks.map((task) => task.id)}
-          strategy={horizontalListSortingStrategy}
-        >
-          {tasks.map((task) => (
-            <div key={task.id} className="snap-start">
-              <TaskCard
-                task={task}
-                onDuplicate={() => onDuplicate(task.id)}
-                onDelete={() => onDelete(task.id)}
-              />
-            </div>
-          ))}
-        </SortableContext>
+      <div className="flex min-h-4 gap-1 overflow-x-auto pb-0.5 snap-x snap-mandatory">
+        {tasks.map((task) => (
+          <div key={task.id} className="snap-start">
+            <TaskCard
+              task={task}
+              onDuplicate={() => onDuplicate(task.id)}
+              onDelete={() => onDelete(task.id)}
+              onChangeStatus={(nextStatus) =>
+                onChangeStatus(task.id, nextStatus)
+              }
+            />
+          </div>
+        ))}
         {tasks.length === 0 ? (
           <p className="text-xs text-gray-11 py-1 px-0.5">{tTasks("emptyLane")}</p>
         ) : null}
@@ -231,10 +261,7 @@ export function ProjectKanban({
 }) {
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     initialTasks,
-    (
-      current,
-      next: KanbanTask[],
-    ) => next,
+    (_current, next: KanbanTask[]) => next,
   );
   const [activeId, setActiveId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -261,6 +288,36 @@ export function ProjectKanban({
 
   const activeTask = optimisticTasks.find((task) => task.id === activeId);
 
+  function applyMove(
+    taskId: string,
+    nextStatus: TaskStatusValue,
+    nextPosition: number,
+  ) {
+    const task = optimisticTasks.find((item) => item.id === taskId);
+    if (!task) return;
+    if (nextStatus === task.status && nextPosition === task.position) return;
+
+    const without = optimisticTasks.filter((item) => item.id !== taskId);
+    const column = without
+      .filter((item) => item.status === nextStatus)
+      .sort((a, b) => a.position - b.position);
+    column.splice(nextPosition, 0, { ...task, status: nextStatus });
+    const others = without.filter((item) => item.status !== nextStatus);
+    const nextTasks = [
+      ...others,
+      ...column.map((item, index) => ({ ...item, position: index })),
+    ];
+
+    startTransition(async () => {
+      setOptimisticTasks(nextTasks);
+      await moveTaskAction({
+        taskId,
+        status: nextStatus,
+        position: nextPosition,
+      });
+    });
+  }
+
   function onDragStart(event: DragStartEvent) {
     setActiveId(String(event.active.id));
   }
@@ -278,38 +335,33 @@ export function ProjectKanban({
     let nextPosition = task.position;
 
     const overId = String(over.id);
-    if (isStatus(overId)) {
+    const overData = over.data.current;
+
+    if (overData?.type === "column" && isStatus(overId)) {
       nextStatus = overId;
-      nextPosition = byStatus[nextStatus].length;
-    } else {
+      nextPosition = byStatus[nextStatus].filter((item) => item.id !== taskId)
+        .length;
+    } else if (overData?.type === "task" || !isStatus(overId)) {
       const overTask = optimisticTasks.find((item) => item.id === overId);
       if (!overTask) return;
       nextStatus = overTask.status;
-      nextPosition = byStatus[nextStatus].findIndex((item) => item.id === overId);
-      if (nextPosition < 0) nextPosition = byStatus[nextStatus].length;
+      const column = byStatus[nextStatus].filter((item) => item.id !== taskId);
+      const overIndex = column.findIndex((item) => item.id === overId);
+      nextPosition = overIndex < 0 ? column.length : overIndex;
+    } else if (isStatus(overId)) {
+      nextStatus = overId;
+      nextPosition = byStatus[nextStatus].filter((item) => item.id !== taskId)
+        .length;
     }
 
-    if (nextStatus === task.status && nextPosition === task.position) return;
+    applyMove(taskId, nextStatus, nextPosition);
+  }
 
-    const without = optimisticTasks.filter((item) => item.id !== taskId);
-    const column = without
-      .filter((item) => item.status === nextStatus)
-      .sort((a, b) => a.position - b.position);
-    column.splice(nextPosition, 0, { ...task, status: nextStatus });
-    const others = without.filter((item) => item.status !== nextStatus);
-    const nextTasks = [
-      ...others,
-      ...column.map((item, index) => ({ ...item, position: index })),
-    ];
-
-    startTransition(() => {
-      setOptimisticTasks(nextTasks);
-      void moveTaskAction({
-        taskId,
-        status: nextStatus,
-        position: nextPosition,
-      });
-    });
+  function onChangeStatus(taskId: string, nextStatus: TaskStatusValue) {
+    const task = optimisticTasks.find((item) => item.id === taskId);
+    if (!task || task.status === nextStatus) return;
+    const nextPosition = byStatus[nextStatus].length;
+    applyMove(taskId, nextStatus, nextPosition);
   }
 
   function onDuplicate(taskId: string) {
@@ -328,7 +380,7 @@ export function ProjectKanban({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={collisionDetection}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
     >
@@ -341,6 +393,7 @@ export function ProjectKanban({
             projectId={projectId}
             onDuplicate={onDuplicate}
             onDelete={onDelete}
+            onChangeStatus={onChangeStatus}
           />
         ))}
       </div>

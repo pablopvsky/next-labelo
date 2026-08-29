@@ -35,8 +35,27 @@
     "title": "Panel",
     "welcome": "Has iniciado sesión.",
     "signOut": "Cerrar sesión",
+    "logOut": "Cerrar sesión",
+    "myAccount": "Mi cuenta",
+    "user": "Usuario",
     "projectsNav": "Proyectos",
     "teamLabel": "Equipo: {name}"
+  },
+  "profile": {
+    "nav": "Perfil",
+    "title": "Perfil",
+    "description": "Tus datos de acceso en Labelo. Cambia el idioma aquí; para actualizar nombre o correo, usa tu proveedor de identidad.",
+    "profileType": "Perfil",
+    "displayName": "Nombre para mostrar",
+    "email": "Correo",
+    "lastSignIn": "Último acceso",
+    "userId": "ID de usuario",
+    "memberSince": "Miembro desde",
+    "verified": "Verificado",
+    "notVerified": "No verificado",
+    "notSyncedYet": "Aún no sincronizado",
+    "syncFooterLabel": "Última sincronización",
+    "refreshHint": "Si algo se ve desactualizado, vuelve a iniciar sesión y actualiza la página."
   },
   "onboarding": {
     "brand": "Labelo",
@@ -69,6 +88,7 @@
     "save": "Guardar",
     "titlePlaceholder": "Título de la etiqueta",
     "actions": "Acciones de etiqueta",
+    "changeStatus": "Cambiar estado",
     "duplicate": "Duplicar",
     "delete": "Eliminar",
     "emptyLane": "Sin etiquetas en esta etapa"

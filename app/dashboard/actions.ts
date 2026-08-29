@@ -8,6 +8,7 @@ export async function updateAccountLocale(locale: string) {
   const result = await updateUserLocale(locale);
 
   if (result.ok) {
+    revalidatePath("/dashboard/profile");
     revalidatePath("/dashboard", "layout");
   }
 

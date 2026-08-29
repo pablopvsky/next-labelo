@@ -35,8 +35,27 @@
     "title": "Dashboard",
     "welcome": "You are signed in.",
     "signOut": "Sign out",
+    "logOut": "Log out",
+    "myAccount": "My account",
+    "user": "User",
     "projectsNav": "Projects",
     "teamLabel": "Team: {name}"
+  },
+  "profile": {
+    "nav": "Profile",
+    "title": "Profile",
+    "description": "Your sign-in details from Labelo. Change your language here; to update your name or email, use your identity provider.",
+    "profileType": "Profile",
+    "displayName": "Display name",
+    "email": "Email",
+    "lastSignIn": "Last sign-in",
+    "userId": "User ID",
+    "memberSince": "Member since",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "notSyncedYet": "Not synced yet",
+    "syncFooterLabel": "Last synced",
+    "refreshHint": "If something looks out of date, refresh the page after signing in again."
   },
   "onboarding": {
     "brand": "Labelo",
@@ -69,6 +88,7 @@
     "save": "Save",
     "titlePlaceholder": "Label title",
     "actions": "Label actions",
+    "changeStatus": "Change status",
     "duplicate": "Duplicate",
     "delete": "Delete",
     "emptyLane": "No labels in this stage"
