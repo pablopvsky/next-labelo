@@ -198,6 +198,26 @@
   }
 }
 
+/*
+  Unlayered so it beats Tailwind utilities (text-sm/text-xs).
+  iOS Safari zooms focused form fields under 16px; Aura mandates 17px.
+*/
+input:not(
+  [type="checkbox"],
+  [type="radio"],
+  [type="range"],
+  [type="hidden"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  [type="image"],
+  [type="color"]
+),
+textarea,
+select {
+  font-size: 17px;
+}
+
 @layer components {
 @import "../styles/main.css" ;
 

@@ -156,6 +156,8 @@ Default **`Card`** uses **`bg-gray-2`**, **`border-gray-6`**, **`rounded-md`**, 
 
 Aura exposes component-level tokens such as **`--aura-input-radius`**, **`--aura-input-bg`**, **`--aura-input-placeholder-color`**, **`--aura-outline`** (focus), and **`--aura-button-radius`**. Prefer **gray/accent steps** for borders and fills rather than arbitrary hex. **Editorial** recipes (filled **`gray-3`**, **ghost** border at **~10%** opacity, **focus** ring **2px** **`primary`/`accent`**) map cleanly to these tokens when you implement them in app CSS.
 
+**Font size (mandatory):** `input`, `textarea`, and `select` must always use **`font-size: 17px`** (never `text-sm` / `text-xs` on those elements). Below 16px, iOS Safari zooms the viewport on focus; 17px matches the root `html` size and prevents that zoom.
+
 ### Editorial surfaces vs control chrome (dual mode)
 
 For **marketing sections and curated layouts**, prefer **background step changes** and **vertical spacing** before **full-width 1px section rules**; use **ghost outlines** (§6) when contrast is low. For **inputs, buttons, dialogs, data-grid chrome, and focus**, keep **legible** borders and rings (**`gray-7`–`gray-8`**, **`--aura-outline`**)—**accessibility** overrides a strict “no lines anywhere” brief.
