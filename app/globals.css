@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+@theme inline {
+  --spacing: 13px;
+  --font-sans: Inter, sans-serif;
+  --info: #e8ebfe;
+  --info-contrast: #0927ec;
+  --success: #e8fef7;
+  --success-contrast: #045d3c;
+  --danger: #feefe8;
+  --danger-contrast: #8e3106;
+  --warning: #fefbe8;
+  --warning-contrast: #5d5104;
+  --radius-sm: calc(var(--spacing) * 0.5);
+  --radius-md: calc(var(--spacing) * 1);
+  --radius-lg: calc(var(--spacing) * 1.5);
+  --radius-xl: calc(var(--spacing) * 2);
+  --aura-loader: var(--aura-loader);
+  --color-warning-contrast: var(--warning-contrast);
+  --color-warning: var(--warning);
+  --color-danger-contrast: var(--danger-contrast);
+  --color-danger: var(--danger);
+  --color-success-contrast: var(--success-contrast);
+  --color-success: var(--success);
+  --color-info-contrast: var(--info-contrast);
+  --color-info: var(--info);
+  --secundary-foreground: var(--secundary-foreground);
+  --secundary: var(--secundary);
+  --primary-foreground: var(--primary-foreground);
+  --primary: var(--primary);
+  --color-gray-track: var(--gray-track);
+  --color-gray-indicator: var(--gray-indicator);
+  --color-gray-surface: var(--gray-surface);
+  --color-gray-contrast: var(--gray-contrast);
+  --color-gray-a12: var(--gray-a12);
+  --color-gray-a11: var(--gray-a11);
+  --color-gray-a10: var(--gray-a10);
+  --color-gray-a9: var(--gray-a9);
+  --color-gray-a8: var(--gray-a8);
+  --color-gray-a7: var(--gray-a7);
+  --color-gray-a6: var(--gray-a6);
+  --color-gray-a5: var(--gray-a5);
+  --color-gray-a4: var(--gray-a4);
+  --color-gray-a3: var(--gray-a3);
+  --color-gray-a2: var(--gray-a2);
+  --color-gray-a1: var(--gray-a1);
+  --color-gray-12: var(--gray-12);
+  --color-gray-11: var(--gray-11);
+  --color-gray-10: var(--gray-10);
+  --color-gray-9: var(--gray-9);
+  --color-gray-8: var(--gray-8);
+  --color-gray-7: var(--gray-7);
+  --color-gray-6: var(--gray-6);
+  --color-gray-5: var(--gray-5);
+  --color-gray-4: var(--gray-4);
+  --color-gray-3: var(--gray-3);
+  --color-gray-2: var(--gray-2);
+  --color-gray-1: var(--gray-1);
+  --color-accent-track: var(--accent-track);
+  --color-accent-indicator: var(--accent-indicator);
+  --color-accent-surface: var(--accent-surface);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-accent-a12: var(--accent-a12);
+  --color-accent-a11: var(--accent-a11);
+  --color-accent-a10: var(--accent-a10);
+  --color-accent-a9: var(--accent-a9);
+  --color-accent-a8: var(--accent-a8);
+  --color-accent-a7: var(--accent-a7);
+  --color-accent-a6: var(--accent-a6);
+  --color-accent-a5: var(--accent-a5);
+  --color-accent-a4: var(--accent-a4);
+  --color-accent-a3: var(--accent-a3);
+  --color-accent-a2: var(--accent-a2);
+  --color-accent-a1: var(--accent-a1);
+  --color-accent-12: var(--accent-12);
+  --color-accent-11: var(--accent-11);
+  --color-accent-10: var(--accent-10);
+  --color-accent-9: var(--accent-9);
+  --color-accent-8: var(--accent-8);
+  --color-accent-7: var(--accent-7);
+  --color-accent-6: var(--accent-6);
+  --color-accent-5: var(--accent-5);
+  --color-accent-4: var(--accent-4);
+  --color-accent-3: var(--accent-3);
+  --color-accent-2: var(--accent-2);
+  --color-accent-1: var(--accent-1);
+}
+
+:root {
+  /* Accent color scale */
+  --accent-1: #fdfcff;
+  --accent-2: #faf8ff;
+  --accent-3: #f5edff;
+  --accent-4: #efe2ff;
+  --accent-5: #e6d5ff;
+  --accent-6: #dcc4ff;
+  --accent-7: #cdaefa;
+  --accent-8: #bb90f3;
+  --accent-9: #964ce1;
+  --accent-10: #8841ce;
+  --accent-11: #813ac6;
+  --accent-12: #421a68;
+
+  --accent-a1: #5500ff03;
+  --accent-a2: #4900ff07;
+  --accent-a3: #7200ff12;
+  --accent-a4: #7300ff1d;
+  --accent-a5: #6800ff2a;
+  --accent-a6: #6801ff3b;
+  --accent-a7: #6200f051;
+  --accent-a8: #6300e46f;
+  --accent-a9: #6a00d4b3;
+  --accent-a10: #5f00bdbe;
+  --accent-a11: #5c00b5c5;
+  --accent-a12: #2d0057e5;
+
+  --accent-contrast: #fff;
+  --accent-surface: #f9f6ffcc;
+  --accent-indicator: #964ce1;
+  --accent-track: #964ce1;
+
+  /* Gray color scale */
+  --gray-1: #fbfcff;
+  --gray-2: #f7f9ff;
+  --gray-3: #edf0fb;
+  --gray-4: #e4e8f7;
+  --gray-5: #dbe0f3;
+  --gray-6: #d3d9ef;
+  --gray-7: #c6cee9;
+  --gray-8: #b1badf;
+  --gray-9: #838cb0;
+  --gray-10: #7981a3;
+  --gray-11: #5c637e;
+  --gray-12: #1b1f30;
+
+  --gray-a1: #0040ff04;
+  --gray-a2: #0040ff08;
+  --gray-a3: #002bc712;
+  --gray-a4: #0026b41b;
+  --gray-a5: #0024aa24;
+  --gray-a6: #0023a32c;
+  --gray-a7: #00249d39;
+  --gray-a8: #001e974e;
+  --gray-a9: #00135d7c;
+  --gray-a10: #00105086;
+  --gray-a11: #000b35a3;
+  --gray-a12: #000518e4;
+
+  --gray-contrast: #ffffff;
+  --gray-surface: #ffffffcc;
+  --gray-indicator: #838cb0;
+  --gray-track: #838cb0;
+
+  --primary: var(--accent-9);
+  --primary-foreground: var(--accent-contrast);
+  --secundary: var(--accent-8);
+  --secundary-foreground: var(--accent-contrast);
+
+  /* Aura Design System - Root Tokens */
+  --aura: 13px;
+  --aura-font-stack: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  --aura-font-quotes: serif;
+
+  /* Aura Background & Text - Mapped to gray scale */
+  --aura-bg: var(--gray-1);
+  --aura-text-primary: var(--accent-12);
+  --aura-text-primary-inverse: var(--gray-contrast);
+
+  --aura-accents-primary: var(--accent-9);
+  --aura-accents-secondary: var(--accent-9);
+
+  /* Aura Component Tokens - Mapped to 12-step system */
+  --aura-input-radius: 6.5px;
+  --aura-button-radius: 6.5px;
+  --aura-input-bg: var(--accent-2);
+  --aura-input-placeholder-color: var(--gray-11);
+  --aura-radius: 0.5rem;
+  --aura-opacity: 0.5;
+  --aura-outline: var(--accent-9) solid 2px;
+  --aura-button-hover: var(--accent-11);
+  --aura-link: var(--gray-12);
+  --aura-link-hover: var(--accent-2);
+  --aura-selector: var(--accent-surface);
+  --aura-loader: var(--primary);
+  --aura-skeleton-start: var(--gray-8);
+  --aura-skeleton-end: var(--gray-5);
+  --radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Accent color scale */
+    --accent-1: #17111e;
+    --accent-2: #1c1427;
+    --accent-3: #2d1b43;
+    --accent-4: #3b1f58;
+    --accent-5: #452767;
+    --accent-6: #513176;
+    --accent-7: #643f8f;
+    --accent-8: #8152b8;
+    --accent-9: #964ce1;
+    --accent-10: #8151b7;
+    --accent-11: #ce9dff;
+    --accent-12: #e9d9ff;
+
+    --accent-a1: #f600000c;
+    --accent-a2: #fc300011;
+    --accent-a3: #fd53e123;
+    --accent-a4: #e34efc38;
+    --accent-a5: #d05bfd4a;
+    --accent-a6: #cd69ff5b;
+    --accent-a7: #c671ff79;
+    --accent-a8: #bc72ffaa;
+    --accent-a9: #ac56fedc;
+    --accent-a10: #bd71ffa9;
+    --accent-a11: #ce9dff;
+    --accent-a12: #e9d9ff;
+
+    --accent-contrast: #fff;
+    --accent-surface: #2c162580;
+    --accent-indicator: #964ce1;
+    --accent-track: #964ce1;
+
+    /* Gray color scale */
+    --gray-1: #12141a;
+    --gray-2: #191b21;
+    --gray-3: #21232c;
+    --gray-4: #262936;
+    --gray-5: #2d303f;
+    --gray-6: #35394b;
+    --gray-7: #41465c;
+    --gray-8: #585f7c;
+    --gray-9: #656d8d;
+    --gray-10: #727a9a;
+    --gray-11: #acb3ce;
+    --gray-12: #eceef4;
+
+    --gray-a1: #e75b0007;
+    --gray-a2: #f9b6000e;
+    --gray-a3: #f5cf4117;
+    --gray-a4: #f9e4981c;
+    --gray-a5: #fdecc323;
+    --gray-a6: #faf5ea2c;
+    --gray-a7: #eeefff3c;
+    --gray-a8: #d0d9fd63;
+    --gray-a9: #cbd5ff77;
+    --gray-a10: #ccd7fe87;
+    --gray-a11: #dbe3fec5;
+    --gray-a12: #f8fafff2;
+
+    --gray-contrast: #ffffff;
+    --gray-surface: rgba(0, 0, 0, 0.05);
+    --gray-indicator: #656d8d;
+    --gray-track: #656d8d;
+  }
+}
+
+@layer base {
+  html {
+    font-size: 17px;
+  }
+  main {
+    background-color: var(--gray-1);
+  }
+}
+
+@layer components {
+
+@import "../styles/main.css" ;
+}
