@@ -88,68 +88,68 @@
 
 :root {
   /* Accent color scale */
-  --accent-1: #fdfcff;
-  --accent-2: #faf8ff;
-  --accent-3: #f5edff;
-  --accent-4: #efe2ff;
-  --accent-5: #e6d5ff;
-  --accent-6: #dcc4ff;
-  --accent-7: #cdaefa;
-  --accent-8: #bb90f3;
-  --accent-9: #964ce1;
-  --accent-10: #8841ce;
-  --accent-11: #813ac6;
-  --accent-12: #421a68;
+  --accent-1: #fcfcfd;
+  --accent-2: #f9f9fb;
+  --accent-3: #f0f0f3;
+  --accent-4: #e8e8ec;
+  --accent-5: #e0e0e6;
+  --accent-6: #d9d9e0;
+  --accent-7: #ceced6;
+  --accent-8: #babac6;
+  --accent-9: #000;
+  --accent-10: #2d2d32;
+  --accent-11: #63636c;
+  --accent-12: #1f1f24;
 
-  --accent-a1: #5500ff03;
-  --accent-a2: #4900ff07;
-  --accent-a3: #7200ff12;
-  --accent-a4: #7300ff1d;
-  --accent-a5: #6800ff2a;
-  --accent-a6: #6801ff3b;
-  --accent-a7: #6200f051;
-  --accent-a8: #6300e46f;
-  --accent-a9: #6a00d4b3;
-  --accent-a10: #5f00bdbe;
-  --accent-a11: #5c00b5c5;
-  --accent-a12: #2d0057e5;
+  --accent-a1: #00005503;
+  --accent-a2: #00005506;
+  --accent-a3: #0000330f;
+  --accent-a4: #00002d17;
+  --accent-a5: #0000321f;
+  --accent-a6: #00002f26;
+  --accent-a7: #00002a31;
+  --accent-a8: #00002d45;
+  --accent-a9: #000000;
+  --accent-a10: #000006d2;
+  --accent-a11: #00000f9c;
+  --accent-a12: #000006e0;
 
   --accent-contrast: #fff;
-  --accent-surface: #f9f6ffcc;
-  --accent-indicator: #964ce1;
-  --accent-track: #964ce1;
+  --accent-surface: #f8f8facc;
+  --accent-indicator: #000;
+  --accent-track: #000;
 
   /* Gray color scale */
-  --gray-1: #fbfcff;
-  --gray-2: #f7f9ff;
-  --gray-3: #edf0fb;
-  --gray-4: #e4e8f7;
-  --gray-5: #dbe0f3;
-  --gray-6: #d3d9ef;
-  --gray-7: #c6cee9;
-  --gray-8: #b1badf;
-  --gray-9: #838cb0;
-  --gray-10: #7981a3;
-  --gray-11: #5c637e;
-  --gray-12: #1b1f30;
+  --gray-1: #fcfcfd;
+  --gray-2: #f9f9fb;
+  --gray-3: #f0f0f3;
+  --gray-4: #e8e8ec;
+  --gray-5: #e0e0e6;
+  --gray-6: #d9d9e0;
+  --gray-7: #ceced6;
+  --gray-8: #babac6;
+  --gray-9: #8d8d98;
+  --gray-10: #82828c;
+  --gray-11: #63636c;
+  --gray-12: #1f1f24;
 
-  --gray-a1: #0040ff04;
-  --gray-a2: #0040ff08;
-  --gray-a3: #002bc712;
-  --gray-a4: #0026b41b;
-  --gray-a5: #0024aa24;
-  --gray-a6: #0023a32c;
-  --gray-a7: #00249d39;
-  --gray-a8: #001e974e;
-  --gray-a9: #00135d7c;
-  --gray-a10: #00105086;
-  --gray-a11: #000b35a3;
-  --gray-a12: #000518e4;
+  --gray-a1: #00005503;
+  --gray-a2: #00005506;
+  --gray-a3: #0000330f;
+  --gray-a4: #00002d17;
+  --gray-a5: #0000321f;
+  --gray-a6: #00002f26;
+  --gray-a7: #00002a31;
+  --gray-a8: #00002d45;
+  --gray-a9: #00001972;
+  --gray-a10: #0000157d;
+  --gray-a11: #00000f9c;
+  --gray-a12: #000006e0;
 
   --gray-contrast: #ffffff;
   --gray-surface: #ffffffcc;
-  --gray-indicator: #838cb0;
-  --gray-track: #838cb0;
+  --gray-indicator: #8d8d98;
+  --gray-track: #8d8d98;
 
   --primary: var(--accent-9);
   --primary-foreground: var(--accent-contrast);
@@ -189,74 +189,6 @@
   --radius: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Accent color scale */
-    --accent-1: #17111e;
-    --accent-2: #1c1427;
-    --accent-3: #2d1b43;
-    --accent-4: #3b1f58;
-    --accent-5: #452767;
-    --accent-6: #513176;
-    --accent-7: #643f8f;
-    --accent-8: #8152b8;
-    --accent-9: #964ce1;
-    --accent-10: #8151b7;
-    --accent-11: #ce9dff;
-    --accent-12: #e9d9ff;
-
-    --accent-a1: #f600000c;
-    --accent-a2: #fc300011;
-    --accent-a3: #fd53e123;
-    --accent-a4: #e34efc38;
-    --accent-a5: #d05bfd4a;
-    --accent-a6: #cd69ff5b;
-    --accent-a7: #c671ff79;
-    --accent-a8: #bc72ffaa;
-    --accent-a9: #ac56fedc;
-    --accent-a10: #bd71ffa9;
-    --accent-a11: #ce9dff;
-    --accent-a12: #e9d9ff;
-
-    --accent-contrast: #fff;
-    --accent-surface: #2c162580;
-    --accent-indicator: #964ce1;
-    --accent-track: #964ce1;
-
-    /* Gray color scale */
-    --gray-1: #12141a;
-    --gray-2: #191b21;
-    --gray-3: #21232c;
-    --gray-4: #262936;
-    --gray-5: #2d303f;
-    --gray-6: #35394b;
-    --gray-7: #41465c;
-    --gray-8: #585f7c;
-    --gray-9: #656d8d;
-    --gray-10: #727a9a;
-    --gray-11: #acb3ce;
-    --gray-12: #eceef4;
-
-    --gray-a1: #e75b0007;
-    --gray-a2: #f9b6000e;
-    --gray-a3: #f5cf4117;
-    --gray-a4: #f9e4981c;
-    --gray-a5: #fdecc323;
-    --gray-a6: #faf5ea2c;
-    --gray-a7: #eeefff3c;
-    --gray-a8: #d0d9fd63;
-    --gray-a9: #cbd5ff77;
-    --gray-a10: #ccd7fe87;
-    --gray-a11: #dbe3fec5;
-    --gray-a12: #f8fafff2;
-
-    --gray-contrast: #ffffff;
-    --gray-surface: rgba(0, 0, 0, 0.05);
-    --gray-indicator: #656d8d;
-    --gray-track: #656d8d;
-  }
-}
-
 @layer base {
   html {
     font-size: 17px;
@@ -267,7 +199,6 @@
 }
 
 @layer components {
-
 @import "../styles/main.css" ;
 
 @import "../styles/accordion.css" ;

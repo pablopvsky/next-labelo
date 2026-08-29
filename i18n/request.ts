@@ -1,14 +1,20 @@
 import { getRequestConfig } from "next-intl/server";
 import { hasLocale } from "next-intl";
 
+import { resolveLocaleFromProfile } from "@/lib/i18n/resolveAppLocale";
+
 import { routing, type AppLocale } from "./routing";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
 
-  const locale: AppLocale = hasLocale(routing.locales, requested)
-    ? requested
-    : routing.defaultLocale;
+  let locale: AppLocale;
+
+  if (hasLocale(routing.locales, requested)) {
+    locale = requested;
+  } else {
+    locale = await resolveLocaleFromProfile();
+  }
 
   return {
     locale,

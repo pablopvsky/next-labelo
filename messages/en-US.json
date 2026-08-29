@@ -8,6 +8,21 @@
     "loading": "Loading…",
     "labelo": "Labelo"
   },
+  "language": {
+    "label": "Language",
+    "enUS": "English",
+    "esCO": "Español (Colombia)"
+  },
+  "localeBanner": {
+    "message": "Choose another country or region to see content specific to your location.",
+    "continue": "Continue",
+    "dismiss": "Dismiss",
+    "selectLabel": "Country or region",
+    "regions": {
+      "en-US": "United States",
+      "es-CO": "Colombia"
+    }
+  },
   "header": {
     "signIn": "Sign in",
     "dashboard": "Dashboard"
@@ -15,10 +30,6 @@
   "home": {
     "title": "Welcome to Labelo",
     "description": "A calm home for your labels and workflows. Sign in to open your workspace."
-  },
-  "locale": {
-    "en": "English",
-    "es": "Spanish"
   },
   "dashboard": {
     "title": "Dashboard",
