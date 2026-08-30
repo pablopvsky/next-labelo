@@ -102,6 +102,7 @@
     "showBacklog": "Backlog",
     "showFlow": "Status board",
     "backlogCount": "{count, plural, one {# label} other {# labels}}",
+    "boardMenu": "Board actions",
     "export": "Export",
     "exportCopy": "Copy JSON",
     "exportCopyFailed": "Could not copy export JSON.",

@@ -102,6 +102,7 @@
     "showBacklog": "Backlog",
     "showFlow": "Tablero de estados",
     "backlogCount": "{count, plural, one {# etiqueta} other {# etiquetas}}",
+    "boardMenu": "Acciones del tablero",
     "export": "Exportar",
     "exportCopy": "Copiar JSON",
     "exportCopyFailed": "No se pudo copiar el JSON de exportación.",
