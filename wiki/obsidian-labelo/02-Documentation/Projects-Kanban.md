@@ -16,4 +16,4 @@ Flow: `requerimiento` → `analisis` → `preproduccion` → `produccion` → `d
 Holding: `backlog` (not on the board). Promoting a backlog label always lands in `requerimiento` only.
 
 ## Actions
-Labels have a title only; titles may duplicate. Flow cards support **duplicate**, **change status**, and **delete**. Backlog rows support **move to requerimiento** and **delete**. The board header also has **export** (download / copy JSON) and **import** (paste or file, AJV-validated) — see [[Task-Import-Export]]. Mutations use server actions under `lib/projects/` and `lib/tasks/` (no `app/api` routes yet).
+Labels have a title only; titles may duplicate. Flow cards support **duplicate**, **change status**, and **delete**. Backlog rows support **move to requerimiento** and **delete**. The board header **⋯** menu (`ResponsiveMenu`) exposes **export** / **copy JSON** / **import** — see [[Task-Import-Export]]. Mutations use server actions under `lib/projects/` and `lib/tasks/` (no `app/api` routes yet).

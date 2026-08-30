@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import {
   ClipboardCopyIcon,
+  DotsHorizontalIcon,
   DownloadIcon,
   UploadIcon,
 } from "@radix-ui/react-icons";
@@ -17,8 +18,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/Dialog";
+import {
+  ResponsiveMenu,
+  ResponsiveMenuContent,
+  ResponsiveMenuItem,
+  ResponsiveMenuLabel,
+  ResponsiveMenuSeparator,
+  ResponsiveMenuTrigger,
+} from "@/components/ui/ResponsiveMenu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Textarea } from "@/components/ui/Textarea";
 import { importTasksAction } from "@/lib/tasks/actions";
@@ -71,7 +79,7 @@ export function TaskImportExport({
   tasks: ExportableTask[];
 }) {
   const t = useTranslations("tasks");
-  const [open, setOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [mode, setMode] = useState<"paste" | "file">("paste");
   const [pasteText, setPasteText] = useState("");
   const [fileText, setFileText] = useState<string | null>(null);
@@ -79,7 +87,6 @@ export function TaskImportExport({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [copiedExample, setCopiedExample] = useState(false);
-  const [copiedExport, setCopiedExport] = useState(false);
   const [pending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -120,11 +127,16 @@ export function TaskImportExport({
   async function copyExport() {
     try {
       await navigator.clipboard.writeText(serializeTaskExport(tasks));
-      setCopiedExport(true);
-      window.setTimeout(() => setCopiedExport(false), 1500);
     } catch {
-      setError(t("exportCopyFailed"));
+      // Clipboard can fail in insecure contexts; download remains available.
     }
+  }
+
+  function openImportDialog() {
+    resetFeedback();
+    setCopiedExample(false);
+    // Let the mobile drawer finish closing before opening the dialog.
+    window.setTimeout(() => setImportOpen(true), 0);
   }
 
   function onFileChange(file: File | null) {
@@ -132,7 +144,10 @@ export function TaskImportExport({
     setFileText(null);
     setFileName(null);
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith(".json") && file.type !== "application/json") {
+    if (
+      !file.name.toLowerCase().endsWith(".json") &&
+      file.type !== "application/json"
+    ) {
       setError(t("importInvalidFile"));
       return;
     }
@@ -178,56 +193,68 @@ export function TaskImportExport({
         setError(result.error);
         return;
       }
-      setSuccess(
-        t("importSuccess", { count: result.importedCount ?? 0 }),
-      );
+      setSuccess(t("importSuccess", { count: result.importedCount ?? 0 }));
       setPasteText("");
       setFileText(null);
       setFileName(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      window.setTimeout(() => setOpen(false), 800);
+      window.setTimeout(() => setImportOpen(false), 800);
     });
   }
 
+  const canExport = tasks.length > 0;
+
   return (
-    <div className="flex flex-wrap items-center gap-0.5">
-      <Button
-        type="button"
-        variant="pill"
-        size="sm"
-        onClick={downloadExport}
-        disabled={tasks.length === 0}
-      >
-        <DownloadIcon className="icon" />
-        {t("export")}
-      </Button>
-      <Button
-        type="button"
-        variant="pill"
-        size="sm"
-        onClick={() => void copyExport()}
-        disabled={tasks.length === 0}
-      >
-        <ClipboardCopyIcon className="icon" />
-        {copiedExport ? t("copied") : t("exportCopy")}
-      </Button>
+    <>
+      <ResponsiveMenu>
+        <ResponsiveMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="menu"
+            size="icon"
+            aria-label={t("boardMenu")}
+          >
+            <DotsHorizontalIcon className="icon" />
+          </Button>
+        </ResponsiveMenuTrigger>
+        <ResponsiveMenuContent title={t("boardMenu")} align="end">
+          <ResponsiveMenuLabel>{t("export")}</ResponsiveMenuLabel>
+          <ResponsiveMenuItem
+            disabled={!canExport}
+            onSelect={() => {
+              downloadExport();
+            }}
+          >
+            <DownloadIcon className="icon" />
+            {t("export")}
+          </ResponsiveMenuItem>
+          <ResponsiveMenuItem
+            disabled={!canExport}
+            onSelect={() => {
+              void copyExport();
+            }}
+          >
+            <ClipboardCopyIcon className="icon" />
+            {t("exportCopy")}
+          </ResponsiveMenuItem>
+          <ResponsiveMenuSeparator />
+          <ResponsiveMenuItem onSelect={() => openImportDialog()}>
+            <UploadIcon className="icon" />
+            {t("import")}
+          </ResponsiveMenuItem>
+        </ResponsiveMenuContent>
+      </ResponsiveMenu>
 
       <Dialog
-        open={open}
+        open={importOpen}
         onOpenChange={(next) => {
-          setOpen(next);
+          setImportOpen(next);
           if (!next) {
             resetFeedback();
             setCopiedExample(false);
           }
         }}
       >
-        <DialogTrigger asChild>
-          <Button type="button" variant="pill" size="sm">
-            <UploadIcon className="icon" />
-            {t("import")}
-          </Button>
-        </DialogTrigger>
         <DialogContent className="max-w-[560px] overflow-y-auto">
           <DialogHeader className="flex flex-col gap-0.5 pr-3">
             <DialogTitle className="h5 text-gray-12">
@@ -323,7 +350,7 @@ export function TaskImportExport({
               type="button"
               variant="pill"
               size="sm"
-              onClick={() => setOpen(false)}
+              onClick={() => setImportOpen(false)}
             >
               {t("importCancel")}
             </Button>
@@ -338,6 +365,6 @@ export function TaskImportExport({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

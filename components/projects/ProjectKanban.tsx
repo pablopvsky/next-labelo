@@ -502,12 +502,7 @@ export function ProjectKanban({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex flex-wrap items-center justify-between gap-1">
-        <TaskImportExport
-          projectId={projectId}
-          projectName={projectName}
-          tasks={optimisticTasks}
-        />
+      <div className="flex flex-wrap items-center justify-end gap-1">
         <Button
           type="button"
           variant="pill"
@@ -521,6 +516,11 @@ export function ProjectKanban({
             <span className="text-xs text-gray-11">{backlogTasks.length}</span>
           ) : null}
         </Button>
+        <TaskImportExport
+          projectId={projectId}
+          projectName={projectName}
+          tasks={optimisticTasks}
+        />
       </div>
 
       {view === "backlog" ? (
