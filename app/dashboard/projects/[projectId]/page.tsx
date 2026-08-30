@@ -38,7 +38,11 @@ export default async function ProjectPage({
         <h2 className="h4 text-gray-12">{project.name}</h2>
         <p className="text-sm text-gray-11">{project.team.name}</p>
       </div>
-      <ProjectKanban projectId={project.id} initialTasks={tasks} />
+      <ProjectKanban
+        projectId={project.id}
+        projectName={project.name}
+        initialTasks={tasks}
+      />
     </div>
   );
 }
