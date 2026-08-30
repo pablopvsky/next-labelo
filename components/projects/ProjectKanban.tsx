@@ -27,6 +27,7 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 
+import { TaskImportExport } from "@/components/projects/TaskImportExport";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
@@ -362,9 +363,11 @@ function BacklogList({
 
 export function ProjectKanban({
   projectId,
+  projectName,
   initialTasks,
 }: {
   projectId: string;
+  projectName?: string;
   initialTasks: KanbanTask[];
 }) {
   const tTasks = useTranslations("tasks");
@@ -499,7 +502,12 @@ export function ProjectKanban({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="flex items-center justify-end">
+      <div className="flex flex-wrap items-center justify-between gap-1">
+        <TaskImportExport
+          projectId={projectId}
+          projectName={projectName}
+          tasks={optimisticTasks}
+        />
         <Button
           type="button"
           variant="pill"
