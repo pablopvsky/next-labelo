@@ -5,10 +5,10 @@ import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 import { PlusIcon } from "@radix-ui/react-icons";
 
+import { DeleteProjectButton } from "@/components/projects/DeleteProjectButton";
 import { Button } from "@/components/ui/Button";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -119,22 +119,29 @@ export function ProjectGrid({
       ) : (
         <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <Link
+            <Card
               key={project.id}
-              href={`/dashboard/projects/${project.id}`}
-              className="block transition-transform duration-[250ms] ease-out hover:scale-[1.03] active:scale-[0.97] motion-reduce:transform-none"
+              className="h-full transition-transform duration-[250ms] ease-out hover:scale-[1.03] hover:bg-gray-3 active:scale-[0.97] motion-reduce:transform-none"
             >
-              <Card className="h-full hover:bg-gray-3">
-                <CardHeader>
-                  <CardTitle>{project.name}</CardTitle>
-                  <CardDescription>
+              <CardHeader className="flex-row items-start justify-between gap-1">
+                <Link
+                  href={`/dashboard/projects/${project.id}`}
+                  className="min-w-0 flex-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent-8"
+                >
+                  <CardTitle className="whitespace-normal [overflow-wrap:anywhere]">
+                    {project.name}
+                  </CardTitle>
+                  <CardDescription className="mt-0.5">
                     {project.team.name} ·{" "}
                     {t("taskCount", { count: project._count.tasks })}
                   </CardDescription>
-                </CardHeader>
-                <CardContent />
-              </Card>
-            </Link>
+                </Link>
+                <DeleteProjectButton
+                  projectId={project.id}
+                  projectName={project.name}
+                />
+              </CardHeader>
+            </Card>
           ))}
         </div>
       )}

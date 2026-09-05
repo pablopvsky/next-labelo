@@ -86,7 +86,13 @@
     "emptyTitle": "No projects yet",
     "emptyDescription": "Create your first project to start organizing labels.",
     "taskCount": "{count, plural, one {# label} other {# labels}}",
-    "back": "All projects"
+    "back": "All projects",
+    "actions": "Project actions",
+    "delete": "Delete",
+    "deleteTitle": "Delete project?",
+    "deleteDescription": "“{name}” and all of its labels will be permanently deleted. This cannot be undone.",
+    "deleteCancel": "Cancel",
+    "deleteConfirm": "Delete project"
   },
   "tasks": {
     "add": "Add",
