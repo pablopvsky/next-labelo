@@ -86,7 +86,13 @@
     "emptyTitle": "Aún no hay proyectos",
     "emptyDescription": "Crea tu primer proyecto para empezar a organizar etiquetas.",
     "taskCount": "{count, plural, one {# etiqueta} other {# etiquetas}}",
-    "back": "Todos los proyectos"
+    "back": "Todos los proyectos",
+    "actions": "Acciones del proyecto",
+    "delete": "Eliminar",
+    "deleteTitle": "¿Eliminar proyecto?",
+    "deleteDescription": "“{name}” y todas sus etiquetas se eliminarán de forma permanente. Esta acción no se puede deshacer.",
+    "deleteCancel": "Cancelar",
+    "deleteConfirm": "Eliminar proyecto"
   },
   "tasks": {
     "add": "Agregar",

@@ -105,7 +105,9 @@ function TaskCard({
       {...(overlay ? {} : { ...attributes, ...listeners })}
     >
       <div className="flex items-start justify-between gap-0.5">
-        <p className="text-sm font-medium text-gray-12">{task.title}</p>
+        <p className="min-w-0 flex-1 whitespace-normal text-sm font-medium text-gray-12 [overflow-wrap:anywhere]">
+          {task.title}
+        </p>
         {!overlay ? (
           <ResponsiveMenu>
             <ResponsiveMenuTrigger asChild>
@@ -323,9 +325,9 @@ function BacklogList({
         {tasks.map((task) => (
           <li
             key={task.id}
-            className="flex items-center justify-between gap-1 rounded-md border border-gray-6 bg-gray-2 px-1 py-0.5"
+            className="flex items-start justify-between gap-1 rounded-md border border-gray-6 bg-gray-2 px-1 py-0.5"
           >
-            <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-12">
+            <p className="min-w-0 flex-1 whitespace-normal text-sm font-medium text-gray-12 [overflow-wrap:anywhere]">
               {task.title}
             </p>
             <div className="flex shrink-0 items-center gap-0.5">

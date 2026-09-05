@@ -46,6 +46,36 @@ export async function createProjectAction(
   return { ok: true, projectId: project.id };
 }
 
+export async function deleteProjectAction(
+  projectId: string,
+): Promise<ProjectActionResult> {
+  const id = projectId.trim();
+  if (!id) {
+    return { ok: false, error: "Project is required" };
+  }
+
+  const { dbUser } = await requireTeamMembership();
+  const prisma = getPrisma();
+  const project = await prisma.project.findUnique({ where: { id } });
+  if (!project) {
+    return { ok: false, error: "Project not found" };
+  }
+
+  const membership = await prisma.teamMember.findUnique({
+    where: {
+      teamId_userId: { teamId: project.teamId, userId: dbUser.id },
+    },
+  });
+  if (!membership) {
+    return { ok: false, error: "Forbidden" };
+  }
+
+  await prisma.project.delete({ where: { id } });
+  revalidatePath("/dashboard");
+  revalidatePath(`/dashboard/projects/${id}`);
+  return { ok: true, projectId: id };
+}
+
 export async function listProjectsForUser() {
   const { dbUser } = await requireTeamMembership();
   const memberships = await getPrisma().teamMember.findMany({

@@ -8,5 +8,5 @@ Domain mutations for teams, projects, and tasks use Next.js **server actions**, 
 
 ## Context
 - Related: [[Teams-Data-Model]], [[Bootstrap]]
-- Implementation Path: `lib/teams/actions.ts`, `lib/projects/actions.ts`, `lib/tasks/actions.ts` (`importTasksAction` for JSON label import)
+- Implementation Path: `lib/teams/actions.ts`, `lib/projects/actions.ts` (`createProjectAction`, `deleteProjectAction`), `lib/tasks/actions.ts` (`importTasksAction` for JSON label import)
 - Auth routes only: `app/login/route.ts`, `app/callback/route.ts` (WorkOS).
