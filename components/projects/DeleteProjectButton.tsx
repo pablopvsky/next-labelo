@@ -34,9 +34,17 @@ export function DeleteProjectButton({
 }) {
   const t = useTranslations("projects");
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+
+  function openConfirm() {
+    setError(null);
+    setMenuOpen(false);
+    // Let the mobile drawer finish closing before opening the dialog.
+    window.setTimeout(() => setConfirmOpen(true), 0);
+  }
 
   function onConfirmDelete() {
     setError(null);
@@ -58,28 +66,21 @@ export function DeleteProjectButton({
 
   return (
     <>
-      <ResponsiveMenu>
+      <ResponsiveMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <ResponsiveMenuTrigger asChild>
           <Button
             type="button"
-            variant="menu"
+            variant="pill"
             size="icon"
-            className="shrink-0"
+            className="shrink-0 text-gray-12"
             aria-label={t("actions")}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-            }}
           >
             <DotsHorizontalIcon className="icon" />
           </Button>
         </ResponsiveMenuTrigger>
         <ResponsiveMenuContent title={t("actions")} align="end">
           <ResponsiveMenuItem
-            onSelect={() => {
-              setError(null);
-              setConfirmOpen(true);
-            }}
+            onSelect={openConfirm}
             className="text-[color:var(--danger-contrast)]"
           >
             <TrashIcon className="icon" />
