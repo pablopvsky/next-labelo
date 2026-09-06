@@ -98,14 +98,14 @@ function TaskCard({
       ref={overlay ? undefined : setNodeRef}
       style={overlay ? undefined : style}
       className={cn(
-        "shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm touch-none",
+        "w-[220px] max-w-full shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm touch-none",
         isDragging && !overlay && "opacity-40",
         overlay && "shadow-md",
       )}
       {...(overlay ? {} : { ...attributes, ...listeners })}
     >
       <div className="flex items-start justify-between gap-0.5">
-        <p className="whitespace-normal text-sm font-medium text-gray-12 [overflow-wrap:anywhere]">
+        <p className="min-w-0 flex-1 whitespace-normal break-words text-sm font-medium text-gray-12">
           {task.title}
         </p>
         {!overlay ? (
@@ -327,7 +327,7 @@ function BacklogList({
             key={task.id}
             className="flex items-start justify-between gap-1 rounded-md border border-gray-6 bg-gray-2 px-1 py-0.5"
           >
-            <p className="min-w-0 flex-1 whitespace-normal text-sm font-medium text-gray-12 [overflow-wrap:anywhere]">
+            <p className="min-w-0 flex-1 whitespace-normal break-words text-sm font-medium text-gray-12">
               {task.title}
             </p>
             <div className="flex shrink-0 items-center gap-0.5">
