@@ -98,14 +98,14 @@ function TaskCard({
       ref={overlay ? undefined : setNodeRef}
       style={overlay ? undefined : style}
       className={cn(
-        "w-[min(100%,220px)] shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm touch-none",
+        "shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm touch-none",
         isDragging && !overlay && "opacity-40",
         overlay && "shadow-md",
       )}
       {...(overlay ? {} : { ...attributes, ...listeners })}
     >
       <div className="flex items-start justify-between gap-0.5">
-        <p className="min-w-0 flex-1 whitespace-normal text-sm font-medium text-gray-12 [overflow-wrap:anywhere]">
+        <p className="whitespace-normal text-sm font-medium text-gray-12 [overflow-wrap:anywhere]">
           {task.title}
         </p>
         {!overlay ? (
