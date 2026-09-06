@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/Button";
 import {
   Card,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
 import {
@@ -121,9 +120,9 @@ export function ProjectGrid({
           {projects.map((project) => (
             <Card
               key={project.id}
-              className="h-full transition-transform duration-[250ms] ease-out hover:scale-[1.03] hover:bg-gray-3 active:scale-[0.97] motion-reduce:transform-none"
+              className="h-full overflow-visible transition-transform duration-[250ms] ease-out hover:scale-[1.03] hover:bg-gray-3 active:scale-[0.97] motion-reduce:transform-none"
             >
-              <CardHeader className="flex-row items-start justify-between gap-1">
+              <div className="flex items-start justify-between gap-1 p-1">
                 <Link
                   href={`/dashboard/projects/${project.id}`}
                   className="min-w-0 flex-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-accent-8"
@@ -136,11 +135,13 @@ export function ProjectGrid({
                     {t("taskCount", { count: project._count.tasks })}
                   </CardDescription>
                 </Link>
-                <DeleteProjectButton
-                  projectId={project.id}
-                  projectName={project.name}
-                />
-              </CardHeader>
+                <div className="relative z-10 shrink-0">
+                  <DeleteProjectButton
+                    projectId={project.id}
+                    projectName={project.name}
+                  />
+                </div>
+              </div>
             </Card>
           ))}
         </div>
