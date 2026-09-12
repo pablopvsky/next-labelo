@@ -97,7 +97,7 @@ def render(logo: Image.Image, size: int, scale: float) -> Image.Image:
     mark = logo.resize((round(size * scale), round(size * scale)), Image.LANCZOS)
     offset = ((size - mark.width) // 2, (size - mark.height) // 2)
     canvas.alpha_composite(mark, offset)
-    return canvas.convert("RGB")
+    return canvas
 
 
 def main() -> None:
@@ -117,8 +117,10 @@ def main() -> None:
         # Launchers crop maskable icons to the inner 80%; keep the mark smaller.
         ("icon-512-maskable.png", 512, 0.62),
     ):
-        render(logo, size, scale).save(ICONS / name, optimize=True)
+        render(logo, size, scale).convert("RGB").save(ICONS / name, optimize=True)
 
+    # Keep the .ico frames RGBA: Next.js refuses to process RGB PNG frames when
+    # it reads app/favicon.ico for the generated <link rel="icon"> tag.
     favicon = render(logo, 256, 0.94)
     for target in (ROOT / "public" / "favicon.ico", ROOT / "app" / "favicon.ico"):
         favicon.save(target, sizes=[(16, 16), (32, 32), (48, 48)])
