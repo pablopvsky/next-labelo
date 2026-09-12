@@ -648,6 +648,7 @@ export function ProjectKanban({
     >
       <main
         className="fixed inset-0 z-40 h-dvh overflow-hidden bg-gray-1 text-gray-12"
+        data-pull-to-refresh={selectedStatus === 0 ? undefined : "blocked"}
         onWheel={handleWheel}
         onKeyDown={(event) => {
           if (event.key === "ArrowUp") verticalApi?.scrollPrev();
