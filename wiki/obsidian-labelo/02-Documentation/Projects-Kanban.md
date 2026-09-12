@@ -1,10 +1,10 @@
 ---
 title: Projects Kanban
-date: 2026-08-29
-tags: [product, ui]
+date: 2026-09-12
+tags: [product, ui, architecture]
 ---
 ## Summary
-Dashboard lists team projects as cards. Inside a project, labels (tasks) move across six stacked status lanes with horizontal scroll and drag-and-drop. A toggle switches to a backlog list outside the flow.
+Dashboard lists team projects as cards. A project opens as a full-viewport nested Embla experience: the outer y-axis moves through statuses and each status owns an x-axis carousel of full-screen labels.
 
 ## Context
 - Related: [[Teams-Data-Model]], [[Internal-Progress]]
@@ -13,7 +13,10 @@ Dashboard lists team projects as cards. Inside a project, labels (tasks) move ac
 ## Statuses (top → bottom)
 Flow: `requerimiento` → `analisis` → `preproduccion` → `produccion` → `divulgacion` → `liberacion`.
 
-Holding: `backlog` (not on the board). Promoting a backlog label always lands in `requerimiento` only.
+Holding: `backlog` is excluded from the y-axis and opens in a dedicated full-screen dialog from the centered toolbar. Promoting a backlog label always lands in `requerimiento`.
+
+## Navigation
+Right-side dots jump directly between statuses; Arrow Up/Down and boundary-aware mouse-wheel input also move the y-axis. Horizontal dragging, Arrow Left/Right, and bottom label dots move within a status while each label keeps its own vertical overflow for long content.
 
 ## Actions
-Labels have a title only; titles may duplicate. Long titles **wrap** (no truncate) on flow cards and backlog rows. Flow cards support **duplicate**, **change status**, and **delete**. Backlog rows support **move to requerimiento** and **delete**. Projects support **delete** (confirm dialog) from the dashboard card ⋯ menu and the project page header — see [[Delete-Projects-Labels]]. The board header **⋯** menu (`ResponsiveMenu`) exposes **export** / **copy JSON** / **import** — see [[Task-Import-Export]]. Mutations use server actions under `lib/projects/` and `lib/tasks/` (no `app/api` routes yet).
+The centered floating toolbar exposes backlog, import, and export; see [[Project-Backlog]] and [[Task-Import-Export]]. Every flow label has a ⋯ menu for edit, change status, and delete, backed by authorized server actions in `lib/tasks/actions.ts`.

@@ -1,34 +1,39 @@
 "use client";
 
-import { useMemo, useOptimistic, useState, useTransition } from "react";
+import Link from "next/link";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useOptimistic,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import useEmblaCarousel, {
+  type UseEmblaCarouselType,
+} from "embla-carousel-react";
 import { useTranslations } from "next-intl";
 import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  TouchSensor,
-  closestCorners,
-  pointerWithin,
-  useDraggable,
-  useDroppable,
-  useSensor,
-  useSensors,
-  type CollisionDetection,
-  type DragEndEvent,
-  type DragStartEvent,
-} from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
-import {
+  ArrowLeftIcon,
   ArrowRightIcon,
   CheckIcon,
-  CopyIcon,
   DotsHorizontalIcon,
+  Pencil1Icon,
   PlusIcon,
   TrashIcon,
 } from "@radix-ui/react-icons";
 
 import { TaskImportExport } from "@/components/projects/TaskImportExport";
 import { Button } from "@/components/ui/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import {
   ResponsiveMenu,
@@ -41,8 +46,8 @@ import {
 import {
   createTaskAction,
   deleteTaskAction,
-  duplicateTaskAction,
   moveTaskAction,
+  updateTaskAction,
 } from "@/lib/tasks/actions";
 import {
   BACKLOG_STATUS,
@@ -59,334 +64,476 @@ export type KanbanTask = {
   position: number;
 };
 
-type BoardView = "flow" | "backlog";
+type CarouselApi = UseEmblaCarouselType[1];
 
-const collisionDetection: CollisionDetection = (args) => {
-  const pointerHits = pointerWithin(args);
-  if (pointerHits.length > 0) return pointerHits;
-  return closestCorners(args);
-};
+function useSelectedSnap(api: CarouselApi) {
+  const [selected, setSelected] = useState(0);
 
-function TaskCard({
+  useEffect(() => {
+    if (!api) return;
+    const onSelect = () => setSelected(api.selectedScrollSnap());
+    onSelect();
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+    return () => {
+      api.off("select", onSelect);
+      api.off("reInit", onSelect);
+    };
+  }, [api]);
+
+  return selected;
+}
+
+function LabelActions({
   task,
-  onDuplicate,
+  onEdit,
   onDelete,
   onChangeStatus,
-  overlay,
 }: {
   task: KanbanTask;
-  onDuplicate?: () => void;
-  onDelete?: () => void;
-  onChangeStatus?: (status: FlowStatusValue) => void;
-  overlay?: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+  onChangeStatus: (status: FlowStatusValue) => void;
 }) {
   const t = useTranslations("tasks");
   const tStatuses = useTranslations("statuses");
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: task.id,
-      data: { type: "task", status: task.status },
-      disabled: overlay,
-    });
-
-  const style = transform
-    ? { transform: CSS.Translate.toString(transform) }
-    : undefined;
 
   return (
-    <div
-      ref={overlay ? undefined : setNodeRef}
-      style={overlay ? undefined : style}
-      className={cn(
-        "w-[220px] max-w-full shrink-0 rounded-md border border-gray-6 bg-gray-2 p-1 shadow-sm touch-none",
-        isDragging && !overlay && "opacity-40",
-        overlay && "shadow-md",
-      )}
-      {...(overlay ? {} : { ...attributes, ...listeners })}
-    >
-      <div className="flex items-start justify-between gap-0.5">
-        <p className="min-w-0 flex-1 whitespace-normal break-words text-sm font-medium text-gray-12">
-          {task.title}
-        </p>
-        {!overlay ? (
-          <ResponsiveMenu>
-            <ResponsiveMenuTrigger asChild>
-              <Button
-                type="button"
-                variant="menu"
-                size="icon"
-                className="shrink-0"
-                aria-label={t("actions")}
-                onPointerDown={(e) => e.stopPropagation()}
-              >
-                <DotsHorizontalIcon className="icon" />
-              </Button>
-            </ResponsiveMenuTrigger>
-            <ResponsiveMenuContent title={t("actions")} align="end">
-              <ResponsiveMenuItem onSelect={() => onDuplicate?.()}>
-                <CopyIcon className="icon" />
-                {t("duplicate")}
-              </ResponsiveMenuItem>
-              <ResponsiveMenuSeparator />
-              <ResponsiveMenuLabel>{t("changeStatus")}</ResponsiveMenuLabel>
-              {FLOW_STATUSES.map((status) => {
-                const isCurrent = status === task.status;
-                return (
-                  <ResponsiveMenuItem
-                    key={status}
-                    disabled={isCurrent}
-                    onSelect={() => onChangeStatus?.(status)}
-                  >
-                    <span className="flex min-w-0 flex-1 items-center gap-1">
-                      <CheckIcon
-                        className={cn(
-                          "icon shrink-0",
-                          isCurrent ? "opacity-100" : "opacity-0",
-                        )}
-                        aria-hidden
-                      />
-                      <span className="truncate">{tStatuses(status)}</span>
-                    </span>
-                  </ResponsiveMenuItem>
-                );
-              })}
-              <ResponsiveMenuSeparator />
-              <ResponsiveMenuItem
-                onSelect={() => onDelete?.()}
-                className="text-[color:var(--danger-contrast)]"
-              >
-                <TrashIcon className="icon" />
-                {t("delete")}
-              </ResponsiveMenuItem>
-            </ResponsiveMenuContent>
-          </ResponsiveMenu>
-        ) : null}
-      </div>
-    </div>
+    <ResponsiveMenu>
+      <ResponsiveMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="pill"
+          size="icon"
+          className="bg-gray-a2 backdrop-blur-md"
+          aria-label={t("actions")}
+        >
+          <DotsHorizontalIcon className="icon" />
+        </Button>
+      </ResponsiveMenuTrigger>
+      <ResponsiveMenuContent title={t("actions")} align="end">
+        <ResponsiveMenuItem onSelect={onEdit}>
+          <Pencil1Icon className="icon" />
+          {t("edit")}
+        </ResponsiveMenuItem>
+        <ResponsiveMenuSeparator />
+        <ResponsiveMenuLabel>{t("changeStatus")}</ResponsiveMenuLabel>
+        {FLOW_STATUSES.map((status) => {
+          const isCurrent = status === task.status;
+          return (
+            <ResponsiveMenuItem
+              key={status}
+              disabled={isCurrent}
+              onSelect={() => onChangeStatus(status)}
+            >
+              <CheckIcon
+                className={cn("icon", isCurrent ? "opacity-100" : "opacity-0")}
+                aria-hidden
+              />
+              {tStatuses(status)}
+            </ResponsiveMenuItem>
+          );
+        })}
+        <ResponsiveMenuSeparator />
+        <ResponsiveMenuItem
+          onSelect={onDelete}
+          className="text-danger-contrast"
+        >
+          <TrashIcon className="icon" />
+          {t("delete")}
+        </ResponsiveMenuItem>
+      </ResponsiveMenuContent>
+    </ResponsiveMenu>
   );
 }
 
-function StatusLane({
+function EditLabelDialog({
+  task,
+  open,
+  onOpenChange,
+  onSave,
+}: {
+  task: KanbanTask;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (title: string) => void;
+}) {
+  const t = useTranslations("tasks");
+  const [title, setTitle] = useState(task.title);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader className="flex flex-col gap-0.5 pr-3">
+          <DialogTitle className="h5">{t("editTitle")}</DialogTitle>
+          <DialogDescription className="text-sm text-gray-11">
+            {t("editDescription")}
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          className="mt-1.5 flex flex-col gap-1.5"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!title.trim()) return;
+            onSave(title);
+            onOpenChange(false);
+          }}
+        >
+          <Input
+            value={title}
+            required
+            autoFocus
+            onChange={(event) => setTitle(event.target.value)}
+          />
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="pill"
+              size="sm"
+              onClick={() => onOpenChange(false)}
+            >
+              {t("editCancel")}
+            </Button>
+            <Button type="submit" size="sm">
+              {t("save")}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function StatusCarousel({
   status,
   tasks,
   projectId,
-  onDuplicate,
   onDelete,
+  onEdit,
   onChangeStatus,
 }: {
   status: FlowStatusValue;
   tasks: KanbanTask[];
   projectId: string;
-  onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string, title: string) => void;
   onChangeStatus: (id: string, status: FlowStatusValue) => void;
 }) {
-  const t = useTranslations("statuses");
-  const tTasks = useTranslations("tasks");
-  const { setNodeRef, isOver } = useDroppable({
-    id: status,
-    data: { type: "column", status },
+  const t = useTranslations("tasks");
+  const tStatuses = useTranslations("statuses");
+  const [viewportRef, api] = useEmblaCarousel({
+    axis: "x",
+    align: "start",
+    containScroll: false,
+    watchDrag: tasks.length > 1,
   });
+  const selected = useSelectedSnap(api);
+  const [editingTask, setEditingTask] = useState<KanbanTask | null>(null);
   const [adding, setAdding] = useState(false);
   const [pending, startTransition] = useTransition();
+  const slides: Array<KanbanTask | null> = tasks.length > 0 ? tasks : [null];
 
   return (
-    <section
-      ref={setNodeRef}
-      className={cn(
-        "flex flex-col gap-1 rounded-md border border-gray-6 bg-gray-1 p-1",
-        isOver && "border-accent-8 bg-accent-a2",
-      )}
+    <div
+      className="relative h-full min-h-0"
+      onKeyDown={(event) => {
+        if (event.key === "ArrowLeft") api?.scrollPrev();
+        if (event.key === "ArrowRight") api?.scrollNext();
+      }}
     >
-      <div className="flex items-center justify-between gap-1">
-        <div className="flex items-baseline gap-0.5">
-          <h2 className="text-sm font-semibold text-gray-12">{t(status)}</h2>
-          <span className="text-xs text-gray-11">{tasks.length}</span>
+      <div ref={viewportRef} className="h-full overflow-hidden">
+        <div className="flex h-full touch-pan-y">
+          {slides.map((task, index) => (
+            <div
+              key={task?.id ?? `${status}-empty`}
+              className="h-full min-w-0 flex-[0_0_100%]"
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} / ${slides.length}`}
+            >
+              <article
+                data-label-scroll
+                className={cn(
+                  "h-full overflow-y-auto overscroll-contain bg-gray-1 px-2 pb-3 pt-7",
+                  index % 2 === 1 && "bg-gray-2",
+                )}
+              >
+                <div className="smesh mx-auto flex min-h-full max-w-full flex-col">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-[0.05em] text-gray-11">
+                        {tStatuses(status)}
+                      </p>
+                      <p className="mt-0.5 text-xs text-gray-11">
+                        {tasks.length > 0
+                          ? t("labelPosition", {
+                              current: index + 1,
+                              total: tasks.length,
+                            })
+                          : t("emptyLane")}
+                      </p>
+                    </div>
+                    {task ? (
+                      <LabelActions
+                        task={task}
+                        onEdit={() => setEditingTask(task)}
+                        onDelete={() => onDelete(task.id)}
+                        onChangeStatus={(nextStatus) =>
+                          onChangeStatus(task.id, nextStatus)
+                        }
+                      />
+                    ) : null}
+                  </div>
+
+                  <div className="flex flex-1 items-center py-3">
+                    {task ? (
+                      <h2 className="h1 whitespace-normal break-words leading-[1.12] text-gray-12">
+                        {task.title}
+                      </h2>
+                    ) : (
+                      <div className="flex flex-col items-start gap-1.5">
+                        <h2 className="h3 text-gray-12">
+                          {tStatuses(status)}
+                        </h2>
+                        <p className="text-gray-11">{t("emptyLane")}</p>
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => setAdding(true)}
+                        >
+                          <PlusIcon className="icon" />
+                          {t("add")}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </article>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {tasks.length > 0 ? (
         <Button
           type="button"
           variant="pill"
-          size="xs"
-          onClick={() => setAdding((v) => !v)}
+          size="sm"
+          className="absolute bottom-1.5 left-2 bg-gray-a2 backdrop-blur-md"
+          onClick={() => setAdding(true)}
         >
           <PlusIcon className="icon" />
-          {tTasks("add")}
+          {t("add")}
         </Button>
-      </div>
-
-      {adding ? (
-        <form
-          className="flex flex-wrap items-center gap-0.5"
-          action={(formData) => {
-            startTransition(async () => {
-              await createTaskAction(null, formData);
-              setAdding(false);
-            });
-          }}
-        >
-          <input type="hidden" name="projectId" value={projectId} />
-          <input type="hidden" name="status" value={status} />
-          <Input
-            name="title"
-            required
-            autoFocus
-            placeholder={tTasks("titlePlaceholder")}
-            className="h-3 min-w-[160px] flex-1 rounded-md border border-gray-7 bg-gray-2 px-1 text-gray-12"
-          />
-          <Button type="submit" size="sm" isLoading={pending}>
-            {tTasks("save")}
-          </Button>
-        </form>
       ) : null}
 
-      <div className="flex min-h-4 gap-1 overflow-x-auto pb-0.5 snap-x snap-mandatory">
-        {tasks.map((task) => (
-          <div key={task.id} className="snap-start">
-            <TaskCard
-              task={task}
-              onDuplicate={() => onDuplicate(task.id)}
-              onDelete={() => onDelete(task.id)}
-              onChangeStatus={(nextStatus) =>
-                onChangeStatus(task.id, nextStatus)
-              }
+      {tasks.length > 1 ? (
+        <div
+          className="absolute bottom-1.5 left-1/2 flex max-w-full -translate-x-1/2 gap-0.5 overflow-x-auto rounded-full bg-gray-a2 p-0.5 backdrop-blur-md"
+          aria-label={t("labelsNavigation")}
+        >
+          {tasks.map((task, index) => (
+            <button
+              key={task.id}
+              type="button"
+              className="flex size-2.5 shrink-0 items-center justify-center rounded-full"
+              onClick={() => api?.scrollTo(index)}
+              aria-label={t("goToLabel", { index: index + 1 })}
+              aria-current={index === selected ? "true" : undefined}
+            >
+              <span
+                className={cn(
+                  "size-0.5 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
+                  index === selected
+                    ? "scale-100 bg-gray-12"
+                    : "scale-75 bg-gray-3",
+                )}
+                aria-hidden
+              />
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <Dialog open={adding} onOpenChange={setAdding}>
+        <DialogContent>
+          <DialogHeader className="flex flex-col gap-0.5 pr-3">
+            <DialogTitle className="h5">{t("addTitle")}</DialogTitle>
+            <DialogDescription className="text-sm text-gray-11">
+              {t("addDescription", { status: tStatuses(status) })}
+            </DialogDescription>
+          </DialogHeader>
+          <form
+            className="mt-1.5 flex flex-col gap-1.5"
+            action={(formData) => {
+              startTransition(async () => {
+                await createTaskAction(null, formData);
+                setAdding(false);
+              });
+            }}
+          >
+            <input type="hidden" name="projectId" value={projectId} />
+            <input type="hidden" name="status" value={status} />
+            <Input
+              name="title"
+              required
+              autoFocus
+              placeholder={t("titlePlaceholder")}
             />
-          </div>
-        ))}
-        {tasks.length === 0 ? (
-          <p className="text-xs text-gray-11 py-1 px-0.5">{tTasks("emptyLane")}</p>
-        ) : null}
-      </div>
-    </section>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="pill"
+                size="sm"
+                onClick={() => setAdding(false)}
+              >
+                {t("editCancel")}
+              </Button>
+              <Button type="submit" size="sm" isLoading={pending}>
+                {t("save")}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {editingTask ? (
+        <EditLabelDialog
+          task={editingTask}
+          open
+          onOpenChange={(open) => {
+            if (!open) setEditingTask(null);
+          }}
+          onSave={(title) => onEdit(editingTask.id, title)}
+        />
+      ) : null}
+    </div>
   );
 }
 
-function BacklogList({
+function BacklogZone({
+  open,
+  onOpenChange,
   tasks,
   projectId,
   onPromote,
   onDelete,
 }: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   tasks: KanbanTask[];
   projectId: string;
   onPromote: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
-  const t = useTranslations("statuses");
-  const tTasks = useTranslations("tasks");
-  const [adding, setAdding] = useState(false);
+  const t = useTranslations("tasks");
+  const tStatuses = useTranslations("statuses");
   const [pending, startTransition] = useTransition();
 
   return (
-    <section className="flex flex-col gap-1 rounded-md border border-gray-6 bg-gray-1 p-1">
-      <div className="flex items-center justify-between gap-1">
-        <div className="flex items-baseline gap-0.5">
-          <h2 className="text-sm font-semibold text-gray-12">{t("backlog")}</h2>
-          <span className="text-xs text-gray-11">
-            {tTasks("backlogCount", { count: tasks.length })}
-          </span>
-        </div>
-        <Button
-          type="button"
-          variant="pill"
-          size="xs"
-          onClick={() => setAdding((v) => !v)}
-        >
-          <PlusIcon className="icon" />
-          {tTasks("add")}
-        </Button>
-      </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="smesh h-dvh max-h-dvh w-full max-w-full overflow-y-auto rounded-sm p-2 pt-6">
+        <DialogHeader className="smush flex w-full flex-col gap-0.5 pr-3">
+          <DialogTitle className="h2">{tStatuses("backlog")}</DialogTitle>
+          <DialogDescription className="text-sm text-gray-11">
+            {t("backlogCount", { count: tasks.length })}
+          </DialogDescription>
+        </DialogHeader>
 
-      {adding ? (
-        <form
-          className="flex flex-wrap items-center gap-0.5"
-          action={(formData) => {
-            startTransition(async () => {
-              await createTaskAction(null, formData);
-              setAdding(false);
-            });
-          }}
-        >
-          <input type="hidden" name="projectId" value={projectId} />
-          <input type="hidden" name="status" value={BACKLOG_STATUS} />
-          <Input
-            name="title"
-            required
-            autoFocus
-            placeholder={tTasks("titlePlaceholder")}
-            className="h-3 min-w-[160px] flex-1 rounded-md border border-gray-7 bg-gray-2 px-1 text-sm text-gray-12"
-          />
-          <Button type="submit" size="sm" isLoading={pending}>
-            {tTasks("save")}
-          </Button>
-        </form>
-      ) : null}
-
-      <ul className="flex flex-col gap-0.5">
-        {tasks.map((task) => (
-          <li
-            key={task.id}
-            className="flex items-start justify-between gap-1 rounded-md border border-gray-6 bg-gray-2 px-1 py-0.5"
+        <div className="smush mt-2 flex w-full flex-col gap-2 pb-3">
+          <form
+            className="flex flex-col gap-1 sm:flex-row"
+            action={(formData) => {
+              startTransition(async () => {
+                await createTaskAction(null, formData);
+              });
+            }}
           >
-            <p className="min-w-0 flex-1 whitespace-normal break-words text-sm font-medium text-gray-12">
-              {task.title}
-            </p>
-            <div className="flex shrink-0 items-center gap-0.5">
-              <Button
-                type="button"
-                variant="menu"
-                size="icon"
-                aria-label={tTasks("moveToFlow")}
-                title={tTasks("moveToFlow")}
-                onClick={() => onPromote(task.id)}
+            <input type="hidden" name="projectId" value={projectId} />
+            <input type="hidden" name="status" value={BACKLOG_STATUS} />
+            <Input
+              name="title"
+              required
+              placeholder={t("titlePlaceholder")}
+              className="flex-1"
+            />
+            <Button type="submit" size="sm" isLoading={pending}>
+              <PlusIcon className="icon" />
+              {t("add")}
+            </Button>
+          </form>
+
+          <ul className="flex flex-col gap-1">
+            {tasks.map((task) => (
+              <li
+                key={task.id}
+                className="flex items-start justify-between gap-1 rounded-md bg-gray-2 p-1.5"
               >
-                <ArrowRightIcon className="icon" />
-              </Button>
-              <Button
-                type="button"
-                variant="menu"
-                size="icon"
-                aria-label={tTasks("delete")}
-                onClick={() => onDelete(task.id)}
-              >
-                <TrashIcon className="icon" />
-              </Button>
-            </div>
-          </li>
-        ))}
-        {tasks.length === 0 ? (
-          <li className="text-xs text-gray-11 py-1 px-0.5">
-            {tTasks("emptyBacklog")}
-          </li>
-        ) : null}
-      </ul>
-    </section>
+                <p className="min-w-0 flex-1 whitespace-normal break-words text-gray-12">
+                  {task.title}
+                </p>
+                <div className="flex shrink-0 items-center gap-0.5">
+                  <Button
+                    type="button"
+                    variant="menu"
+                    size="icon"
+                    aria-label={t("moveToFlow")}
+                    title={t("moveToFlow")}
+                    onClick={() => onPromote(task.id)}
+                  >
+                    <ArrowRightIcon className="icon" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="menu"
+                    size="icon"
+                    aria-label={t("delete")}
+                    onClick={() => onDelete(task.id)}
+                  >
+                    <TrashIcon className="icon" />
+                  </Button>
+                </div>
+              </li>
+            ))}
+            {tasks.length === 0 ? (
+              <li className="rounded-md bg-gray-2 p-2 text-sm text-gray-11">
+                {t("emptyBacklog")}
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
 export function ProjectKanban({
   projectId,
   projectName,
+  teamName,
   initialTasks,
 }: {
   projectId: string;
-  projectName?: string;
+  projectName: string;
+  teamName: string;
   initialTasks: KanbanTask[];
 }) {
-  const tTasks = useTranslations("tasks");
-  const [view, setView] = useState<BoardView>("flow");
+  const t = useTranslations("tasks");
+  const tProjects = useTranslations("projects");
+  const tStatuses = useTranslations("statuses");
+  const [viewportRef, verticalApi] = useEmblaCarousel({
+    axis: "y",
+    align: "start",
+    containScroll: false,
+  });
+  const selectedStatus = useSelectedSnap(verticalApi);
+  const [backlogOpen, setBacklogOpen] = useState(false);
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     initialTasks,
     (_current, next: KanbanTask[]) => next,
   );
-  const [activeId, setActiveId] = useState<string | null>(null);
   const [, startTransition] = useTransition();
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(TouchSensor, {
-      activationConstraint: { delay: 180, tolerance: 8 },
-    }),
-  );
+  const lastWheelAt = useRef(0);
 
   const byStatus = useMemo(() => {
     const map = {
@@ -395,172 +542,180 @@ export function ProjectKanban({
         FLOW_STATUSES.map((status) => [status, [] as KanbanTask[]]),
       ),
     } as Record<TaskStatusValue, KanbanTask[]>;
-    for (const task of optimisticTasks) {
-      map[task.status].push(task);
-    }
-    map[BACKLOG_STATUS].sort((a, b) => a.position - b.position);
-    for (const status of FLOW_STATUSES) {
+    for (const task of optimisticTasks) map[task.status].push(task);
+    for (const status of [BACKLOG_STATUS, ...FLOW_STATUSES]) {
       map[status].sort((a, b) => a.position - b.position);
     }
     return map;
   }, [optimisticTasks]);
 
-  const activeTask = optimisticTasks.find((task) => task.id === activeId);
-  const backlogTasks = byStatus[BACKLOG_STATUS];
-
-  function applyMove(
-    taskId: string,
-    nextStatus: TaskStatusValue,
-    nextPosition: number,
-  ) {
-    const task = optimisticTasks.find((item) => item.id === taskId);
-    if (!task) return;
-    if (nextStatus === task.status && nextPosition === task.position) return;
-
-    const without = optimisticTasks.filter((item) => item.id !== taskId);
-    const column = without
-      .filter((item) => item.status === nextStatus)
-      .sort((a, b) => a.position - b.position);
-    column.splice(nextPosition, 0, { ...task, status: nextStatus });
-    const others = without.filter((item) => item.status !== nextStatus);
-    const nextTasks = [
-      ...others,
-      ...column.map((item, index) => ({ ...item, position: index })),
-    ];
-
-    startTransition(async () => {
-      setOptimisticTasks(nextTasks);
-      await moveTaskAction({
-        taskId,
-        status: nextStatus,
-        position: nextPosition,
+  const applyMove = useCallback(
+    (taskId: string, nextStatus: TaskStatusValue) => {
+      const task = optimisticTasks.find((item) => item.id === taskId);
+      if (!task || task.status === nextStatus) return;
+      const nextPosition = byStatus[nextStatus].length;
+      const nextTasks = optimisticTasks.map((item) =>
+        item.id === taskId
+          ? { ...item, status: nextStatus, position: nextPosition }
+          : item,
+      );
+      startTransition(async () => {
+        setOptimisticTasks(nextTasks);
+        await moveTaskAction({ taskId, status: nextStatus, position: nextPosition });
       });
-    });
-  }
-
-  function onDragStart(event: DragStartEvent) {
-    setActiveId(String(event.active.id));
-  }
-
-  function onDragEnd(event: DragEndEvent) {
-    setActiveId(null);
-    const { active, over } = event;
-    if (!over) return;
-
-    const taskId = String(active.id);
-    const task = optimisticTasks.find((item) => item.id === taskId);
-    if (!task) return;
-
-    let nextStatus: TaskStatusValue = task.status;
-    let nextPosition = task.position;
-
-    const overId = String(over.id);
-    const overData = over.data.current;
-
-    if (overData?.type === "column" && isFlowStatusValue(overId)) {
-      nextStatus = overId;
-      nextPosition = byStatus[nextStatus].filter((item) => item.id !== taskId)
-        .length;
-    } else if (overData?.type === "task" || !isFlowStatusValue(overId)) {
-      const overTask = optimisticTasks.find((item) => item.id === overId);
-      if (!overTask || overTask.status === BACKLOG_STATUS) return;
-      nextStatus = overTask.status;
-      const column = byStatus[nextStatus].filter((item) => item.id !== taskId);
-      const overIndex = column.findIndex((item) => item.id === overId);
-      nextPosition = overIndex < 0 ? column.length : overIndex;
-    } else if (isFlowStatusValue(overId)) {
-      nextStatus = overId;
-      nextPosition = byStatus[nextStatus].filter((item) => item.id !== taskId)
-        .length;
-    }
-
-    applyMove(taskId, nextStatus, nextPosition);
-  }
-
-  function onChangeStatus(taskId: string, nextStatus: FlowStatusValue) {
-    const task = optimisticTasks.find((item) => item.id === taskId);
-    if (!task || task.status === nextStatus) return;
-    const nextPosition = byStatus[nextStatus].length;
-    applyMove(taskId, nextStatus, nextPosition);
-  }
-
-  function onPromoteToFlow(taskId: string) {
-    const nextPosition = byStatus.requerimiento.length;
-    applyMove(taskId, "requerimiento", nextPosition);
-  }
-
-  function onDuplicate(taskId: string) {
-    startTransition(() => {
-      void duplicateTaskAction(taskId);
-    });
-  }
+    },
+    [byStatus, optimisticTasks, setOptimisticTasks],
+  );
 
   function onDelete(taskId: string) {
-    startTransition(() => {
+    startTransition(async () => {
       setOptimisticTasks(optimisticTasks.filter((task) => task.id !== taskId));
-      void deleteTaskAction(taskId);
+      await deleteTaskAction(taskId);
     });
+  }
+
+  function onEdit(taskId: string, title: string) {
+    startTransition(async () => {
+      setOptimisticTasks(
+        optimisticTasks.map((task) =>
+          task.id === taskId ? { ...task, title } : task,
+        ),
+      );
+      await updateTaskAction({ taskId, title });
+    });
+  }
+
+  function handleWheel(event: React.WheelEvent<HTMLDivElement>) {
+    if (!verticalApi || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    const scrollArea = (event.target as HTMLElement).closest<HTMLElement>(
+      "[data-label-scroll]",
+    );
+    if (scrollArea) {
+      const canScrollDown =
+        scrollArea.scrollTop + scrollArea.clientHeight < scrollArea.scrollHeight - 1;
+      const canScrollUp = scrollArea.scrollTop > 1;
+      if ((event.deltaY > 0 && canScrollDown) || (event.deltaY < 0 && canScrollUp)) {
+        return;
+      }
+    }
+    event.preventDefault();
+    const now = Date.now();
+    if (now - lastWheelAt.current < 500) return;
+    lastWheelAt.current = now;
+    if (event.deltaY > 0) verticalApi.scrollNext();
+    else verticalApi.scrollPrev();
   }
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex flex-wrap items-center justify-end gap-1">
-        <Button
-          type="button"
-          variant="pill"
-          size="sm"
-          onClick={() =>
-            setView((current) => (current === "flow" ? "backlog" : "flow"))
-          }
-        >
-          {view === "flow" ? tTasks("showBacklog") : tTasks("showFlow")}
-          {view === "flow" && backlogTasks.length > 0 ? (
-            <span className="text-xs text-gray-11">{backlogTasks.length}</span>
-          ) : null}
-        </Button>
-        <TaskImportExport
-          projectId={projectId}
-          projectName={projectName}
-          tasks={optimisticTasks}
-        />
-      </div>
+    <main
+      className="fixed inset-0 z-40 h-dvh overflow-hidden bg-gray-1 text-gray-12"
+      onWheel={handleWheel}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowUp") verticalApi?.scrollPrev();
+        if (event.key === "ArrowDown") verticalApi?.scrollNext();
+      }}
+    >
+      <h1 className="sr-only">{projectName}</h1>
 
-      {view === "backlog" ? (
-        <BacklogList
-          tasks={backlogTasks}
-          projectId={projectId}
-          onPromote={onPromoteToFlow}
-          onDelete={onDelete}
-        />
-      ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={collisionDetection}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-        >
-          <div className="flex flex-col gap-1.5">
-            {FLOW_STATUSES.map((status) => (
-              <StatusLane
-                key={status}
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-20 px-1.5 pt-1.5">
+        <div className="project-toolbar-grid smesh">
+          <Button
+            asChild
+            variant="pill"
+            size="sm"
+            className="pointer-events-auto w-fit bg-gray-a2 backdrop-blur-md"
+          >
+            <Link href="/dashboard">
+              <ArrowLeftIcon className="icon" />
+              <span className="hidden sm:inline">{tProjects("back")}</span>
+            </Link>
+          </Button>
+
+          <div className="pointer-events-auto flex items-center justify-center gap-0.5 rounded-md bg-gray-a2 p-0.5 backdrop-blur-md">
+            <Button
+              type="button"
+              variant="menu"
+              size="sm"
+              onClick={() => setBacklogOpen(true)}
+            >
+              {t("showBacklog")}
+              {byStatus.backlog.length > 0 ? (
+                <span className="text-xs text-gray-11">
+                  {byStatus.backlog.length}
+                </span>
+              ) : null}
+            </Button>
+            <TaskImportExport
+              projectId={projectId}
+              projectName={projectName}
+              tasks={optimisticTasks}
+              toolbar
+            />
+          </div>
+
+          <div className="hidden justify-self-end text-right sm:block">
+            <p className="m-0 text-xs font-semibold text-gray-12">{projectName}</p>
+            <p className="m-0 text-xs text-gray-11">{teamName}</p>
+          </div>
+        </div>
+      </header>
+
+      <div ref={viewportRef} className="h-full overflow-hidden">
+        <div className="flex h-full flex-col touch-pan-x">
+          {FLOW_STATUSES.map((status) => (
+            <section
+              key={status}
+              className="h-full min-h-0 flex-[0_0_100%]"
+              aria-label={tStatuses(status)}
+            >
+              <StatusCarousel
                 status={status}
                 tasks={byStatus[status]}
                 projectId={projectId}
-                onDuplicate={onDuplicate}
                 onDelete={onDelete}
-                onChangeStatus={onChangeStatus}
+                onEdit={onEdit}
+                onChangeStatus={applyMove}
               />
-            ))}
-          </div>
-          <DragOverlay>
-            {activeTask ? <TaskCard task={activeTask} overlay /> : null}
-          </DragOverlay>
-        </DndContext>
-      )}
-    </div>
-  );
-}
+            </section>
+          ))}
+        </div>
+      </div>
 
-function isFlowStatusValue(value: string): value is FlowStatusValue {
-  return (FLOW_STATUSES as readonly string[]).includes(value);
+      <nav
+        className="absolute right-1 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-0.5 rounded-full bg-gray-a2 p-0.5 backdrop-blur-md"
+        aria-label={t("statusesNavigation")}
+      >
+        {FLOW_STATUSES.map((status, index) => (
+          <button
+            key={status}
+            type="button"
+            className="flex size-2.5 items-center justify-center rounded-full"
+            onClick={() => verticalApi?.scrollTo(index)}
+            aria-label={t("goToStatus", { status: tStatuses(status) })}
+            aria-current={index === selectedStatus ? "step" : undefined}
+            title={tStatuses(status)}
+          >
+            <span
+              className={cn(
+                "size-0.5 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
+                index === selectedStatus
+                  ? "scale-100 bg-accent-9"
+                  : "scale-75 bg-gray-3",
+              )}
+              aria-hidden
+            />
+          </button>
+        ))}
+      </nav>
+
+      <BacklogZone
+        open={backlogOpen}
+        onOpenChange={setBacklogOpen}
+        tasks={byStatus.backlog}
+        projectId={projectId}
+        onPromote={(id) => applyMove(id, "requerimiento")}
+        onDelete={onDelete}
+      />
+    </main>
+  );
 }

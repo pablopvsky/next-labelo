@@ -1,10 +1,10 @@
 ---
 title: Project Backlog
-date: 2026-08-29
+date: 2026-09-12
 tags: [dev-log, product, ui]
 ---
 ## Summary
-Projects keep a `backlog` task status separate from the six flow lanes. The status board has a toggle that swaps to a simple backlog list (title + promote icon). Promote always moves the label into `requerimiento`.
+Projects keep a `backlog` task status outside the six-stage carousel. The centered toolbar opens it as a dedicated full-screen dialog with label creation, promotion, and deletion; promotion always targets `requerimiento`.
 
 ## Context
 - Related: [[Projects-Kanban]], [[Internal-Progress]]
