@@ -18,5 +18,8 @@ Holding: `backlog` is excluded from the y-axis and opens in a dedicated full-scr
 ## Navigation
 Right-side dots jump directly between statuses; Arrow Up/Down and boundary-aware mouse-wheel input also move the y-axis. Horizontal dragging, Arrow Left/Right, and bottom label dots move within a status while each label keeps its own vertical overflow for long content.
 
+## Top bar
+The header keeps only two elements: the active status name with its `Etiqueta X de Y` position in the top center, and a single ⋯ button in the top right. Label titles are centered vertically and horizontally inside each slide, so the header never competes with content.
+
 ## Actions
-The centered floating toolbar exposes backlog, import, and export; see [[Project-Backlog]] and [[Task-Import-Export]]. Every flow label has a ⋯ menu for edit, change status, and delete, backed by authorized server actions in `lib/tasks/actions.ts`.
+The top-right ⋯ button opens one drawer on every breakpoint (`ResponsiveMenu alwaysDrawer`). It groups add, edit, change status, and delete for the label currently on screen, then backlog, export, copy JSON, import, and back to the dashboard; see [[Project-Backlog]] and [[Task-Import-Export]]. `ProjectKanban` tracks the active status and label index so the drawer always acts on the visible label, backed by authorized server actions in `lib/tasks/actions.ts`.
