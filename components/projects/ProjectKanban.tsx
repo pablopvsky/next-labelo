@@ -287,11 +287,11 @@ function StatusCarousel({
 
                   <div className="flex flex-1 items-center py-3">
                     {task ? (
-                      <h2 className="h1 max-w-[24ch] whitespace-normal break-words leading-[1.12] text-gray-12">
+                      <h2 className="h1 whitespace-normal break-words leading-[1.12] text-gray-12">
                         {task.title}
                       </h2>
                     ) : (
-                      <div className="flex max-w-[32rem] flex-col items-start gap-1.5">
+                      <div className="flex flex-col items-start gap-1.5">
                         <h2 className="h3 text-gray-12">
                           {tStatuses(status)}
                         </h2>
@@ -337,7 +337,7 @@ function StatusCarousel({
               key={task.id}
               type="button"
               className={cn(
-                "size-1 rounded-full border border-gray-8 transition-transform",
+                "size-1 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
                 index === selected ? "scale-100 bg-gray-12" : "scale-75 bg-gray-3",
               )}
               onClick={() => api?.scrollTo(index)}
@@ -426,14 +426,14 @@ function BacklogZone({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="smesh h-dvh max-h-dvh w-full max-w-full overflow-y-auto rounded-sm p-2 pt-6">
-        <DialogHeader className="mx-auto flex w-full max-w-[1032px] flex-col gap-0.5 pr-3">
+        <DialogHeader className="smush flex w-full flex-col gap-0.5 pr-3">
           <DialogTitle className="h2">{tStatuses("backlog")}</DialogTitle>
           <DialogDescription className="text-sm text-gray-11">
             {t("backlogCount", { count: tasks.length })}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mx-auto mt-2 flex w-full max-w-[1032px] flex-col gap-2 pb-3">
+        <div className="smush mt-2 flex w-full flex-col gap-2 pb-3">
           <form
             className="flex flex-col gap-1 sm:flex-row"
             action={(formData) => {
@@ -611,7 +611,7 @@ export function ProjectKanban({
       <h1 className="sr-only">{projectName}</h1>
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-20 px-1.5 pt-1.5">
-        <div className="mx-auto grid max-w-[1600px] grid-cols-[1fr_auto_1fr] items-start gap-1">
+        <div className="project-toolbar-grid smesh">
           <Button
             asChild
             variant="pill"
@@ -683,7 +683,7 @@ export function ProjectKanban({
             key={status}
             type="button"
             className={cn(
-              "size-1 rounded-full border border-gray-8 transition-transform",
+              "size-1 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
               index === selectedStatus
                 ? "scale-100 bg-accent-9"
                 : "scale-75 bg-gray-3 hover:scale-100",
