@@ -21,6 +21,9 @@ Right-side dots jump directly between statuses; Arrow Up/Down and boundary-aware
 ## Top bar
 The header is a three-column grid: a back arrow to `/dashboard` in the top left, the active status name with its `Etiqueta X de Y` position in the top center, and a single ⋯ button in the top right. Label titles are centered vertically and horizontally inside each slide, so the header never competes with content.
 
+## Pull to refresh
+The board is a fixed full-viewport surface, so the window never scrolls and [[PWA-Pull-Refresh]] cannot read a scroll offset. `ProjectKanban` therefore sets `data-pull-to-refresh="blocked"` on its `<main>` while the y-axis sits past the first status; only the first status with its label pane at the top can pull.
+
 ## Safe area
 Both dot rails float above the slides, so `.label-safe-area` (in `app/globals.css`) reserves 4.5 spacing units of inline padding on every slide. That matches the status rail geometry (13px offset plus a 45.5px track), keeping centered titles clear of the dots on both sides instead of wrapping under them.
 

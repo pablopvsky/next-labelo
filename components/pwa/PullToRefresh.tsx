@@ -27,12 +27,32 @@ function isIosDevice(): boolean {
   return /iP(hone|ad|od)/.test(window.navigator.userAgent);
 }
 
+const OPEN_MODAL_SELECTOR =
+  '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]';
+
+/**
+ * Only the real top of the page may pull: an open dialog or drawer covers it,
+ * panes marked `data-pull-to-refresh="blocked"` (a carousel past its first
+ * slide) opt out, and every scrollable ancestor has to sit at its own top.
+ */
+function isAtTop(target: EventTarget | null): boolean {
+  if (window.scrollY > 0) return false;
+  if (document.querySelector(OPEN_MODAL_SELECTOR)) return false;
+  if (!(target instanceof Element)) return true;
+  if (target.closest('[data-pull-to-refresh="blocked"]')) return false;
+  for (let node: Element | null = target; node; node = node.parentElement) {
+    if (node.scrollTop > 0) return false;
+  }
+  return true;
+}
+
 export function PullToRefresh() {
   const t = useTranslations("pwa");
   const [enabled, setEnabled] = useState(false);
   const [pull, setPull] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const startY = useRef(0);
+  const startTarget = useRef<EventTarget | null>(null);
   const pulling = useRef(false);
 
   useEffect(() => {
@@ -44,10 +64,11 @@ export function PullToRefresh() {
     if (!enabled || refreshing) return;
 
     const onStart = (event: TouchEvent) => {
-      if (window.scrollY > 0) {
+      if (!isAtTop(event.target)) {
         pulling.current = false;
         return;
       }
+      startTarget.current = event.target;
       startY.current = event.touches[0]?.clientY ?? 0;
       pulling.current = true;
     };
@@ -56,7 +77,7 @@ export function PullToRefresh() {
       if (!pulling.current) return;
       const y = event.touches[0]?.clientY ?? 0;
       const delta = y - startY.current;
-      if (delta <= 0 || window.scrollY > 0) {
+      if (delta <= 0 || !isAtTop(startTarget.current)) {
         setPull(0);
         return;
       }
@@ -71,6 +92,7 @@ export function PullToRefresh() {
     const onEnd = () => {
       if (!pulling.current) return;
       pulling.current = false;
+      startTarget.current = null;
       setPull((current) => {
         if (current >= PULL_THRESHOLD_PX) {
           setRefreshing(true);
