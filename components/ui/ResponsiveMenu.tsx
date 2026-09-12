@@ -56,6 +56,8 @@ type ResponsiveMenuProps = {
   onOpenChange?: (open: boolean) => void;
   /** Use Vaul NestedRoot when this menu opens inside another drawer (e.g. mobile sidebar). */
   nested?: boolean;
+  /** Keep the drawer presentation on every breakpoint instead of switching to a dropdown. */
+  alwaysDrawer?: boolean;
 };
 
 function ResponsiveMenu({
@@ -63,6 +65,7 @@ function ResponsiveMenu({
   open: openProp,
   onOpenChange,
   nested = false,
+  alwaysDrawer = false,
 }: ResponsiveMenuProps) {
   const isMobile = useIsMobile();
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
@@ -79,7 +82,7 @@ function ResponsiveMenu({
     [isControlled, onOpenChange],
   );
 
-  const mode: ResponsiveMenuMode = isMobile ? "mobile" : "desktop";
+  const mode: ResponsiveMenuMode = isMobile || alwaysDrawer ? "mobile" : "desktop";
   const contextValue = React.useMemo(
     () => ({ mode, setOpen }),
     [mode, setOpen],

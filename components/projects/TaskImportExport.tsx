@@ -1,10 +1,16 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import {
+  createContext,
+  useContext,
+  useRef,
+  useState,
+  useTransition,
+  type ReactNode,
+} from "react";
 import { useTranslations } from "next-intl";
 import {
   ClipboardCopyIcon,
-  DotsHorizontalIcon,
   DownloadIcon,
   UploadIcon,
 } from "@radix-ui/react-icons";
@@ -19,14 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import {
-  ResponsiveMenu,
-  ResponsiveMenuContent,
-  ResponsiveMenuItem,
-  ResponsiveMenuLabel,
-  ResponsiveMenuSeparator,
-  ResponsiveMenuTrigger,
-} from "@/components/ui/ResponsiveMenu";
+import { ResponsiveMenuItem } from "@/components/ui/ResponsiveMenu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Textarea } from "@/components/ui/Textarea";
 import { importTasksAction } from "@/lib/tasks/actions";
@@ -69,16 +68,41 @@ function parseImportText(raw: string):
   }
 }
 
-export function TaskImportExport({
+type TaskImportExportActions = {
+  canExport: boolean;
+  downloadExport: () => void;
+  copyExport: () => Promise<void>;
+  openImportDialog: () => void;
+};
+
+const TaskImportExportContext = createContext<TaskImportExportActions | null>(
+  null,
+);
+
+function useTaskImportExport() {
+  const context = useContext(TaskImportExportContext);
+  if (!context) {
+    throw new Error(
+      "TaskImportExport components must be used within TaskImportExportProvider",
+    );
+  }
+  return context;
+}
+
+/**
+ * Holds the import dialog outside of any menu or drawer so the actions stay
+ * mounted after the drawer that triggered them closes.
+ */
+export function TaskImportExportProvider({
   projectId,
   projectName,
   tasks,
-  toolbar = false,
+  children,
 }: {
   projectId: string;
   projectName?: string;
   tasks: ExportableTask[];
-  toolbar?: boolean;
+  children: ReactNode;
 }) {
   const t = useTranslations("tasks");
   const [importOpen, setImportOpen] = useState(false);
@@ -207,67 +231,10 @@ export function TaskImportExport({
   const canExport = tasks.length > 0;
 
   return (
-    <>
-      {toolbar ? (
-        <Button
-          type="button"
-          variant="menu"
-          size="sm"
-          onClick={openImportDialog}
-        >
-          <UploadIcon className="icon" />
-          {t("import")}
-        </Button>
-      ) : null}
-      <ResponsiveMenu>
-        <ResponsiveMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="menu"
-            size={toolbar ? "sm" : "icon"}
-            aria-label={t("boardMenu")}
-          >
-            {toolbar ? (
-              <>
-                <DownloadIcon className="icon" />
-                {t("export")}
-              </>
-            ) : (
-              <DotsHorizontalIcon className="icon" />
-            )}
-          </Button>
-        </ResponsiveMenuTrigger>
-        <ResponsiveMenuContent title={t("boardMenu")} align="end">
-          <ResponsiveMenuLabel>{t("export")}</ResponsiveMenuLabel>
-          <ResponsiveMenuItem
-            disabled={!canExport}
-            onSelect={() => {
-              downloadExport();
-            }}
-          >
-            <DownloadIcon className="icon" />
-            {t("export")}
-          </ResponsiveMenuItem>
-          <ResponsiveMenuItem
-            disabled={!canExport}
-            onSelect={() => {
-              void copyExport();
-            }}
-          >
-            <ClipboardCopyIcon className="icon" />
-            {t("exportCopy")}
-          </ResponsiveMenuItem>
-          {!toolbar ? (
-            <>
-              <ResponsiveMenuSeparator />
-              <ResponsiveMenuItem onSelect={() => openImportDialog()}>
-                <UploadIcon className="icon" />
-                {t("import")}
-              </ResponsiveMenuItem>
-            </>
-          ) : null}
-        </ResponsiveMenuContent>
-      </ResponsiveMenu>
+    <TaskImportExportContext.Provider
+      value={{ canExport, downloadExport, copyExport, openImportDialog }}
+    >
+      {children}
 
       <Dialog
         open={importOpen}
@@ -389,6 +356,34 @@ export function TaskImportExport({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </TaskImportExportContext.Provider>
+  );
+}
+
+export function TaskImportExportMenuItems() {
+  const t = useTranslations("tasks");
+  const { canExport, downloadExport, copyExport, openImportDialog } =
+    useTaskImportExport();
+
+  return (
+    <>
+      <ResponsiveMenuItem disabled={!canExport} onSelect={() => downloadExport()}>
+        <DownloadIcon className="icon" />
+        {t("export")}
+      </ResponsiveMenuItem>
+      <ResponsiveMenuItem
+        disabled={!canExport}
+        onSelect={() => {
+          void copyExport();
+        }}
+      >
+        <ClipboardCopyIcon className="icon" />
+        {t("exportCopy")}
+      </ResponsiveMenuItem>
+      <ResponsiveMenuItem onSelect={() => openImportDialog()}>
+        <UploadIcon className="icon" />
+        {t("import")}
+      </ResponsiveMenuItem>
     </>
   );
 }
