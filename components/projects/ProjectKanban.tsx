@@ -11,7 +11,7 @@ import {
   useTransition,
 } from "react";
 import useEmblaCarousel, {
-  type EmblaCarouselType,
+  type UseEmblaCarouselType,
 } from "embla-carousel-react";
 import { useTranslations } from "next-intl";
 import {
@@ -64,7 +64,9 @@ export type KanbanTask = {
   position: number;
 };
 
-function useSelectedSnap(api: EmblaCarouselType | undefined) {
+type CarouselApi = UseEmblaCarouselType[1];
+
+function useSelectedSnap(api: CarouselApi) {
   const [selected, setSelected] = useState(0);
 
   useEffect(() => {
@@ -158,8 +160,6 @@ function EditLabelDialog({
 }) {
   const t = useTranslations("tasks");
   const [title, setTitle] = useState(task.title);
-
-  useEffect(() => setTitle(task.title), [task.title, open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
