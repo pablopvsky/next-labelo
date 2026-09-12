@@ -161,6 +161,7 @@ function ResponsiveMenuContent({
   align,
   side,
   sideOffset,
+  onCloseAutoFocus,
   ...props
 }: ResponsiveMenuContentProps) {
   const { mode } = useResponsiveMenu();
@@ -173,6 +174,7 @@ function ResponsiveMenuContent({
           "max-h-[min(75dvh,calc(100dvh-env(safe-area-inset-bottom)))] w-full max-w-full border-gray-6 bg-gray-1 p-0 pb-[env(safe-area-inset-bottom)]",
           drawerClassName,
         )}
+        onCloseAutoFocus={onCloseAutoFocus}
       >
         <DrawerHeader className="shrink-0 border-b border-gray-6 px-2 py-1.5 text-left">
           <DrawerTitle className="h5">{title}</DrawerTitle>
@@ -196,6 +198,7 @@ function ResponsiveMenuContent({
       side={side}
       sideOffset={sideOffset}
       className={className}
+      onCloseAutoFocus={onCloseAutoFocus}
       {...props}
     >
       {showTitleOnDesktop ? (
