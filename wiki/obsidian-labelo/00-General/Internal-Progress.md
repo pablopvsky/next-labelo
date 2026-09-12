@@ -11,7 +11,7 @@ Home and project boards now share the same fullscreen overlay navigation. Home i
 - Implementation Path: `components/projects/ProjectHome.tsx`, `components/projects/ProjectKanban.tsx`
 
 ## Status
-- Done: Slides center inside `width - rail` (trailing-only safe area) and the label title opens the actions drawer.
+- Done: Slide safe area mirrors the rail reservation on both inline sides, so titles center on the viewport; the label title opens the actions drawer.
 - Done: Home project list uses the same Embla y-axis overlay as the board (dots, wheel/keyboard, top-right ⋯ for create/delete).
 - Done: Prisma `Team` / `TeamMember` / `Project` / `Task`; create/join onboarding.
 - Done: Full-screen [[Projects-Kanban]] with nested Embla axes and a single ⋯ drawer.
