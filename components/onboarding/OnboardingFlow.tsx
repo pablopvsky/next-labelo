@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
 
+import { Logo } from "@/components/brand/Logo";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
@@ -29,7 +30,10 @@ export function OnboardingFlow() {
 
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-xl flex-col justify-center gap-2 px-2 py-3">
-      <p className="text-sm font-semibold text-accent-11">{t("brand")}</p>
+      <div className="flex items-center gap-1">
+        <Logo size="md" />
+        <p className="text-sm font-semibold text-accent-11">{t("brand")}</p>
+      </div>
       <h1 className="h2 text-gray-12">{t("title")}</h1>
       <p className="text-gray-11">{t("description")}</p>
 

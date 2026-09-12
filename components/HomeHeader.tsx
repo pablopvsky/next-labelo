@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 
+import { Logo } from "@/components/brand/Logo";
 import { LocaleSuggestionBanner } from "@/components/LocaleSuggestionBanner";
 import Button from "@/components/ui/Button";
 
@@ -17,7 +18,7 @@ export function HomeHeader() {
       <header className="border-b border-gray-6 bg-gray-1/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-2 h-[52px] flex items-center justify-between gap-2">
           <div className="flex items-center gap-1">
-            <div className="size-2 bg-accent-9 rounded-full" />
+            <Logo priority />
             <span className="font-semibold text-sm tracking-tight">
               {tCommon("labelo")}
             </span>

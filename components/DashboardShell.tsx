@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { DashboardIcon } from "@radix-ui/react-icons";
 
+import { Logo } from "@/components/brand/Logo";
 import { AccountSidebarMenu } from "@/components/dashboard/AccountSidebarMenu";
 import {
   Sidebar,
@@ -36,9 +37,12 @@ export function DashboardShell({
     <SidebarProvider>
       <Sidebar>
         <SidebarContent className="p-2">
-          <p className="text-sm font-semibold text-gray-12 px-2 py-1">
-            {tCommon("labelo")}
-          </p>
+          <div className="flex items-center gap-1 px-2 py-1">
+            <Logo />
+            <p className="text-sm font-semibold text-gray-12">
+              {tCommon("labelo")}
+            </p>
+          </div>
           {teamName ? (
             <p className="text-xs text-gray-11 px-2 pb-1">{teamName}</p>
           ) : null}
@@ -72,6 +76,7 @@ export function DashboardShell({
       <SidebarInset>
         <header className="flex h-[52px] items-center gap-2 border-b border-gray-6 px-2">
           <SidebarTrigger />
+          <Logo />
           <h1 className="text-sm font-semibold text-gray-12">{t("title")}</h1>
         </header>
         <div className="p-2">{children}</div>
