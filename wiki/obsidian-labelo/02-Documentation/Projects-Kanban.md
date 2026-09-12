@@ -25,7 +25,9 @@ Right-side dots jump directly between statuses; Arrow Up/Down and boundary-aware
 The header is a three-column grid: a back arrow to `/dashboard` in the top left, the active status name with its `Etiqueta X de Y` position in the top center, and a single ⋯ button in the top right. Label titles are centered vertically and horizontally inside each slide, so the header never competes with content.
 
 ## Safe area
-Both dot rails float above the slides, so `.label-safe-area` (in `app/globals.css`) reserves 4.5 spacing units of inline padding on every slide. That matches the status rail geometry (13px offset plus a 45.5px track), keeping centered titles clear of the dots on both sides instead of wrapping under them.
+The status rail floats above the slides, so `.label-safe-area` (in `app/globals.css`) reserves its 58.5px track (13px offset plus a 45.5px rail) on the **trailing side only**, with a single 13px gutter leading. Centering therefore happens inside `width - rail`, the real free area, rather than the viewport — otherwise a centered title reads as pushed right. Slides with no rail (a lone project on home) set `data-rail="none"` to zero out `--label-rail`.
 
 ## Actions
 The top-right ⋯ button opens one drawer on every breakpoint (`ResponsiveMenu alwaysDrawer`). It groups add, edit, change status, and delete for the label currently on screen, then backlog, export, copy JSON, and import; see [[Project-Backlog]] and [[Task-Import-Export]]. Going back to the dashboard lives in the header instead of the drawer. `ProjectKanban` tracks the active status and label index so the drawer always acts on the visible label, backed by authorized server actions in `lib/tasks/actions.ts`.
+
+Tapping the label title opens that same drawer: `ProjectKanban` owns the open state and passes it to both the ⋯ trigger and each slide, so the full-screen title doubles as the actions affordance.

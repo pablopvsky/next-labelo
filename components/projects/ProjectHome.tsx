@@ -304,6 +304,7 @@ export function ProjectHome({
                 <Link
                   href={`/dashboard/projects/${project.id}`}
                   data-label-scroll
+                  data-rail={projects.length > 1 ? undefined : "none"}
                   className={cn(
                     "label-safe-area flex h-full overflow-y-auto overscroll-contain py-7 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-8",
                     index % 2 === 1 ? "bg-gray-2" : "bg-gray-1",
@@ -323,6 +324,7 @@ export function ProjectHome({
               ) : (
                 <div
                   data-label-scroll
+                  data-rail="none"
                   className="label-safe-area flex h-full overflow-y-auto overscroll-contain bg-gray-1 py-7"
                 >
                   <div className="smesh m-auto flex w-full max-w-full flex-col items-center justify-center gap-1.5 text-center">

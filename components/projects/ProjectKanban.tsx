@@ -99,6 +99,8 @@ function BoardActions({
   backlogCount,
   projectName,
   teamName,
+  open,
+  onOpenChange,
   onAdd,
   onEdit,
   onDelete,
@@ -110,6 +112,8 @@ function BoardActions({
   backlogCount: number;
   projectName: string;
   teamName: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onAdd: () => void;
   onEdit: () => void;
   onDelete: () => void;
@@ -120,7 +124,7 @@ function BoardActions({
   const tStatuses = useTranslations("statuses");
 
   return (
-    <ResponsiveMenu alwaysDrawer>
+    <ResponsiveMenu alwaysDrawer open={open} onOpenChange={onOpenChange}>
       <ResponsiveMenuTrigger asChild>
         <Button
           type="button"
@@ -318,11 +322,13 @@ function StatusCarousel({
   tasks,
   onActiveIndexChange,
   onAdd,
+  onOpenActions,
 }: {
   status: FlowStatusValue;
   tasks: KanbanTask[];
   onActiveIndexChange: (status: FlowStatusValue, index: number) => void;
   onAdd: () => void;
+  onOpenActions: () => void;
 }) {
   const t = useTranslations("tasks");
   const tStatuses = useTranslations("statuses");
@@ -368,7 +374,15 @@ function StatusCarousel({
                 <div className="smesh m-auto flex w-full max-w-full flex-col items-center justify-center gap-1.5 text-center">
                   {task ? (
                     <h2 className="h1 whitespace-normal break-words leading-[1.12] text-gray-12">
-                      {task.title}
+                      <button
+                        type="button"
+                        aria-haspopup="dialog"
+                        aria-label={`${task.title} — ${t("boardMenu")}`}
+                        className="w-full cursor-pointer rounded-sm text-center outline-none focus-visible:ring-2 focus-visible:ring-accent-8"
+                        onClick={onOpenActions}
+                      >
+                        {task.title}
+                      </button>
                     </h2>
                   ) : (
                     <>
@@ -389,29 +403,31 @@ function StatusCarousel({
 
       {tasks.length > 1 ? (
         <div
-          className="absolute bottom-1.5 left-1/2 flex max-w-full -translate-x-1/2 gap-0.5 overflow-x-auto rounded-full bg-gray-a2 p-0.5 backdrop-blur-md"
+          className="label-safe-area pointer-events-none absolute inset-x-0 bottom-1.5 flex justify-center"
           aria-label={t("labelsNavigation")}
         >
-          {tasks.map((task, index) => (
-            <button
-              key={task.id}
-              type="button"
-              className="flex size-2.5 shrink-0 items-center justify-center rounded-full"
-              onClick={() => api?.scrollTo(index)}
-              aria-label={t("goToLabel", { index: index + 1 })}
-              aria-current={index === selected ? "true" : undefined}
-            >
-              <span
-                className={cn(
-                  "size-0.5 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
-                  index === selected
-                    ? "scale-100 bg-gray-12"
-                    : "scale-75 bg-gray-3",
-                )}
-                aria-hidden
-              />
-            </button>
-          ))}
+          <div className="pointer-events-auto flex max-w-full gap-0.5 overflow-x-auto rounded-full bg-gray-a2 p-0.5 backdrop-blur-md">
+            {tasks.map((task, index) => (
+              <button
+                key={task.id}
+                type="button"
+                className="flex size-2.5 shrink-0 items-center justify-center rounded-full"
+                onClick={() => api?.scrollTo(index)}
+                aria-label={t("goToLabel", { index: index + 1 })}
+                aria-current={index === selected ? "true" : undefined}
+              >
+                <span
+                  className={cn(
+                    "size-0.5 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
+                    index === selected
+                      ? "scale-100 bg-gray-12"
+                      : "scale-75 bg-gray-3",
+                  )}
+                  aria-hidden
+                />
+              </button>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>
@@ -543,6 +559,7 @@ export function ProjectKanban({
       ) as Record<FlowStatusValue, number>,
   );
   const [backlogOpen, setBacklogOpen] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
   const [addingStatus, setAddingStatus] = useState<FlowStatusValue | null>(null);
   const [editingTask, setEditingTask] = useState<KanbanTask | null>(null);
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
@@ -690,6 +707,8 @@ export function ProjectKanban({
               backlogCount={byStatus.backlog.length}
               projectName={projectName}
               teamName={teamName}
+              open={actionsOpen}
+              onOpenChange={setActionsOpen}
               onAdd={() => setAddingStatus(currentStatus)}
               onEdit={() => setEditingTask(activeTask)}
               onDelete={() => activeTask && onDelete(activeTask.id)}
@@ -714,6 +733,7 @@ export function ProjectKanban({
                   tasks={byStatus[status]}
                   onActiveIndexChange={onActiveIndexChange}
                   onAdd={() => setAddingStatus(status)}
+                  onOpenActions={() => setActionsOpen(true)}
                 />
               </section>
             ))}
