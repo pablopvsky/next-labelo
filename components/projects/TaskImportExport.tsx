@@ -73,10 +73,12 @@ export function TaskImportExport({
   projectId,
   projectName,
   tasks,
+  toolbar = false,
 }: {
   projectId: string;
   projectName?: string;
   tasks: ExportableTask[];
+  toolbar?: boolean;
 }) {
   const t = useTranslations("tasks");
   const [importOpen, setImportOpen] = useState(false);
@@ -211,10 +213,17 @@ export function TaskImportExport({
           <Button
             type="button"
             variant="menu"
-            size="icon"
+            size={toolbar ? "sm" : "icon"}
             aria-label={t("boardMenu")}
           >
-            <DotsHorizontalIcon className="icon" />
+            {toolbar ? (
+              <>
+                <DownloadIcon className="icon" />
+                {t("export")}
+              </>
+            ) : (
+              <DotsHorizontalIcon className="icon" />
+            )}
           </Button>
         </ResponsiveMenuTrigger>
         <ResponsiveMenuContent title={t("boardMenu")} align="end">
@@ -237,13 +246,28 @@ export function TaskImportExport({
             <ClipboardCopyIcon className="icon" />
             {t("exportCopy")}
           </ResponsiveMenuItem>
-          <ResponsiveMenuSeparator />
-          <ResponsiveMenuItem onSelect={() => openImportDialog()}>
-            <UploadIcon className="icon" />
-            {t("import")}
-          </ResponsiveMenuItem>
+          {!toolbar ? (
+            <>
+              <ResponsiveMenuSeparator />
+              <ResponsiveMenuItem onSelect={() => openImportDialog()}>
+                <UploadIcon className="icon" />
+                {t("import")}
+              </ResponsiveMenuItem>
+            </>
+          ) : null}
         </ResponsiveMenuContent>
       </ResponsiveMenu>
+      {toolbar ? (
+        <Button
+          type="button"
+          variant="menu"
+          size="sm"
+          onClick={openImportDialog}
+        >
+          <UploadIcon className="icon" />
+          {t("import")}
+        </Button>
+      ) : null}
 
       <Dialog
         open={importOpen}

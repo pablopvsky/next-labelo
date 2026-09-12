@@ -139,6 +139,29 @@ export async function moveTaskAction(input: {
   return { ok: true };
 }
 
+export async function updateTaskAction(input: {
+  taskId: string;
+  title: string;
+}): Promise<TaskActionResult> {
+  const title = input.title.trim();
+  if (!title) return { ok: false, error: "Title is required" };
+
+  const prisma = getPrisma();
+  const task = await prisma.task.findUnique({ where: { id: input.taskId } });
+  if (!task) return { ok: false, error: "Task not found" };
+
+  const project = await getAccessibleProject(task.projectId);
+  if (!project) return { ok: false, error: "Forbidden" };
+
+  await prisma.task.update({
+    where: { id: task.id },
+    data: { title },
+  });
+
+  revalidateProject(task.projectId);
+  return { ok: true, taskId: task.id };
+}
+
 export async function duplicateTaskAction(
   taskId: string,
 ): Promise<TaskActionResult> {
