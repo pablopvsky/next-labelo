@@ -117,7 +117,6 @@ function BoardActions({
   onOpenBacklog: () => void;
 }) {
   const t = useTranslations("tasks");
-  const tProjects = useTranslations("projects");
   const tStatuses = useTranslations("statuses");
 
   return (
@@ -192,14 +191,6 @@ function BoardActions({
           ) : null}
         </ResponsiveMenuItem>
         <TaskImportExportMenuItems />
-
-        <ResponsiveMenuSeparator />
-        <ResponsiveMenuItem asChild>
-          <Link href="/dashboard">
-            <ArrowLeftIcon className="icon" />
-            {tProjects("back")}
-          </Link>
-        </ResponsiveMenuItem>
       </ResponsiveMenuContent>
     </ResponsiveMenu>
   );
@@ -369,7 +360,7 @@ function StatusCarousel({
               <article
                 data-label-scroll
                 className={cn(
-                  "flex h-full overflow-y-auto overscroll-contain bg-gray-1 px-2 py-7",
+                  "label-safe-area flex h-full overflow-y-auto overscroll-contain bg-gray-1 py-7",
                   index % 2 === 1 && "bg-gray-2",
                 )}
               >
@@ -535,6 +526,7 @@ export function ProjectKanban({
   initialTasks: KanbanTask[];
 }) {
   const t = useTranslations("tasks");
+  const tProjects = useTranslations("projects");
   const tStatuses = useTranslations("statuses");
   const [viewportRef, verticalApi] = useEmblaCarousel({
     axis: "y",
@@ -666,7 +658,16 @@ export function ProjectKanban({
 
         <header className="pointer-events-none absolute inset-x-0 top-0 z-20 px-1.5 pt-1.5">
           <div className="project-toolbar-grid smesh">
-            <span aria-hidden />
+            <Button
+              asChild
+              variant="pill"
+              size="icon"
+              className="pointer-events-auto justify-self-start bg-gray-a2 backdrop-blur-md"
+            >
+              <Link href="/dashboard" aria-label={tProjects("back")}>
+                <ArrowLeftIcon className="icon" />
+              </Link>
+            </Button>
 
             <div className="flex min-w-0 flex-col items-center rounded-md bg-gray-a2 px-1 py-0.5 text-center backdrop-blur-md">
               <p className="m-0 truncate text-xs font-semibold uppercase tracking-[0.05em] text-gray-12">
