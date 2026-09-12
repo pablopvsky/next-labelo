@@ -122,6 +122,7 @@ function BoardActions({
 }) {
   const t = useTranslations("tasks");
   const tStatuses = useTranslations("statuses");
+  const editOnCloseRef = useRef(false);
 
   return (
     <ResponsiveMenu alwaysDrawer open={open} onOpenChange={onOpenChange}>
@@ -140,6 +141,13 @@ function BoardActions({
         title={t("boardMenu")}
         description={`${projectName} · ${teamName}`}
         drawerClassName="mx-auto sm:max-w-[440px]"
+        onCloseAutoFocus={(event) => {
+          if (!editOnCloseRef.current) return;
+          editOnCloseRef.current = false;
+          // Start editing once the menu releases focus so the caret lands in the title.
+          event.preventDefault();
+          onEdit();
+        }}
       >
         <ResponsiveMenuLabel>{tStatuses(status)}</ResponsiveMenuLabel>
         <ResponsiveMenuItem onSelect={() => openAfterDrawer(onAdd)}>
@@ -149,7 +157,11 @@ function BoardActions({
 
         {task ? (
           <>
-            <ResponsiveMenuItem onSelect={() => openAfterDrawer(onEdit)}>
+            <ResponsiveMenuItem
+              onSelect={() => {
+                editOnCloseRef.current = true;
+              }}
+            >
               <Pencil1Icon className="icon" />
               {t("edit")}
             </ResponsiveMenuItem>
@@ -260,83 +272,107 @@ function AddLabelDialog({
   );
 }
 
-function EditLabelDialog({
-  task,
-  open,
-  onOpenChange,
+/** Edits the label title in place, keeping the same typographic scale as the board. */
+function LabelTitleEditor({
+  title,
   onSave,
+  onCancel,
 }: {
-  task: KanbanTask;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  title: string;
   onSave: (title: string) => void;
+  onCancel: () => void;
 }) {
   const t = useTranslations("tasks");
-  const [title, setTitle] = useState(task.title);
+  const fieldRef = useRef<HTMLTextAreaElement>(null);
+  const [value, setValue] = useState(title);
+
+  useEffect(() => {
+    const field = fieldRef.current;
+    if (!field) return;
+    field.focus({ preventScroll: true });
+    field.setSelectionRange(field.value.length, field.value.length);
+  }, []);
+
+  useEffect(() => {
+    const field = fieldRef.current;
+    if (!field) return;
+    field.style.height = "auto";
+    field.style.height = `${field.scrollHeight}px`;
+  }, [value]);
+
+  function save() {
+    const next = value.trim();
+    if (!next) return;
+    if (next !== title) onSave(next);
+    onCancel();
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader className="flex flex-col gap-0.5 pr-3">
-          <DialogTitle className="h5">{t("editTitle")}</DialogTitle>
-          <DialogDescription className="text-sm text-gray-11">
-            {t("editDescription")}
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          className="mt-1.5 flex flex-col gap-1.5"
-          onSubmit={(event) => {
+    <div className="flex w-full flex-col items-center gap-1">
+      <textarea
+        ref={fieldRef}
+        rows={1}
+        value={value}
+        aria-label={t("editTitle")}
+        placeholder={t("titlePlaceholder")}
+        className="h1 w-full resize-none overflow-hidden rounded-sm border border-gray-7 bg-gray-1 p-0.5 text-center leading-[1.12] text-gray-12 outline-none focus-visible:border-accent-8 focus-visible:ring-2 focus-visible:ring-accent-8"
+        onChange={(event) => setValue(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
             event.preventDefault();
-            if (!title.trim()) return;
-            onSave(title);
-            onOpenChange(false);
-          }}
+            save();
+          }
+          if (event.key === "Escape") {
+            event.preventDefault();
+            onCancel();
+          }
+        }}
+      />
+      <p className="sr-only">{t("editDescription")}</p>
+      <div className="flex items-center gap-0.5">
+        <Button type="button" variant="pill" size="sm" onClick={onCancel}>
+          {t("editCancel")}
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          disabled={!value.trim()}
+          onClick={save}
         >
-          <Input
-            value={title}
-            required
-            autoFocus
-            onChange={(event) => setTitle(event.target.value)}
-          />
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="pill"
-              size="sm"
-              onClick={() => onOpenChange(false)}
-            >
-              {t("editCancel")}
-            </Button>
-            <Button type="submit" size="sm">
-              {t("save")}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          {t("save")}
+        </Button>
+      </div>
+    </div>
   );
 }
 
 function StatusCarousel({
   status,
   tasks,
+  editingTaskId,
   onActiveIndexChange,
   onAdd,
   onOpenActions,
+  onEditSave,
+  onEditCancel,
 }: {
   status: FlowStatusValue;
   tasks: KanbanTask[];
+  editingTaskId: string | null;
   onActiveIndexChange: (status: FlowStatusValue, index: number) => void;
   onAdd: () => void;
   onOpenActions: () => void;
+  onEditSave: (taskId: string, title: string) => void;
+  onEditCancel: () => void;
 }) {
   const t = useTranslations("tasks");
   const tStatuses = useTranslations("statuses");
+  const isEditing = tasks.some((task) => task.id === editingTaskId);
   const [viewportRef, api] = useEmblaCarousel({
     axis: "x",
     align: "start",
     containScroll: false,
-    watchDrag: tasks.length > 1,
+    watchDrag: tasks.length > 1 && !isEditing,
   });
   const selected = useSelectedSnap(api);
   const slides: Array<KanbanTask | null> = tasks.length > 0 ? tasks : [null];
@@ -372,7 +408,13 @@ function StatusCarousel({
               >
                 {/* Auto margins keep the slide centered without clipping tall content. */}
                 <div className="smesh m-auto flex w-full max-w-full flex-col items-center justify-center gap-1.5 text-center">
-                  {task ? (
+                  {task && task.id === editingTaskId ? (
+                    <LabelTitleEditor
+                      title={task.title}
+                      onSave={(title) => onEditSave(task.id, title)}
+                      onCancel={onEditCancel}
+                    />
+                  ) : task ? (
                     <h2 className="h1 whitespace-normal break-words leading-[1.12] text-gray-12">
                       <button
                         type="button"
@@ -561,7 +603,7 @@ export function ProjectKanban({
   const [backlogOpen, setBacklogOpen] = useState(false);
   const [actionsOpen, setActionsOpen] = useState(false);
   const [addingStatus, setAddingStatus] = useState<FlowStatusValue | null>(null);
-  const [editingTask, setEditingTask] = useState<KanbanTask | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [optimisticTasks, setOptimisticTasks] = useOptimistic(
     initialTasks,
     (_current, next: KanbanTask[]) => next,
@@ -619,6 +661,7 @@ export function ProjectKanban({
   );
 
   function onDelete(taskId: string) {
+    setEditingTaskId((current) => (current === taskId ? null : current));
     startTransition(async () => {
       setOptimisticTasks(optimisticTasks.filter((task) => task.id !== taskId));
       await deleteTaskAction(taskId);
@@ -710,7 +753,7 @@ export function ProjectKanban({
               open={actionsOpen}
               onOpenChange={setActionsOpen}
               onAdd={() => setAddingStatus(currentStatus)}
-              onEdit={() => setEditingTask(activeTask)}
+              onEdit={() => setEditingTaskId(activeTask?.id ?? null)}
               onDelete={() => activeTask && onDelete(activeTask.id)}
               onChangeStatus={(nextStatus) =>
                 activeTask && applyMove(activeTask.id, nextStatus)
@@ -731,9 +774,12 @@ export function ProjectKanban({
                 <StatusCarousel
                   status={status}
                   tasks={byStatus[status]}
+                  editingTaskId={editingTaskId}
                   onActiveIndexChange={onActiveIndexChange}
                   onAdd={() => setAddingStatus(status)}
                   onOpenActions={() => setActionsOpen(true)}
+                  onEditSave={onEdit}
+                  onEditCancel={() => setEditingTaskId(null)}
                 />
               </section>
             ))}
@@ -775,17 +821,6 @@ export function ProjectKanban({
             onOpenChange={(open) => {
               if (!open) setAddingStatus(null);
             }}
-          />
-        ) : null}
-
-        {editingTask ? (
-          <EditLabelDialog
-            task={editingTask}
-            open
-            onOpenChange={(open) => {
-              if (!open) setEditingTask(null);
-            }}
-            onSave={(title) => onEdit(editingTask.id, title)}
           />
         ) : null}
 
