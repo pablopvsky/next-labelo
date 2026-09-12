@@ -208,6 +208,17 @@ export function TaskImportExport({
 
   return (
     <>
+      {toolbar ? (
+        <Button
+          type="button"
+          variant="menu"
+          size="sm"
+          onClick={openImportDialog}
+        >
+          <UploadIcon className="icon" />
+          {t("import")}
+        </Button>
+      ) : null}
       <ResponsiveMenu>
         <ResponsiveMenuTrigger asChild>
           <Button
@@ -257,17 +268,6 @@ export function TaskImportExport({
           ) : null}
         </ResponsiveMenuContent>
       </ResponsiveMenu>
-      {toolbar ? (
-        <Button
-          type="button"
-          variant="menu"
-          size="sm"
-          onClick={openImportDialog}
-        >
-          <UploadIcon className="icon" />
-          {t("import")}
-        </Button>
-      ) : null}
 
       <Dialog
         open={importOpen}

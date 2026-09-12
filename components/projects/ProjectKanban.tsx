@@ -329,21 +329,28 @@ function StatusCarousel({
 
       {tasks.length > 1 ? (
         <div
-          className="absolute bottom-1.5 left-1/2 flex -translate-x-1/2 gap-0.5 rounded-full bg-gray-a2 p-0.5 backdrop-blur-md"
+          className="absolute bottom-1.5 left-1/2 flex max-w-full -translate-x-1/2 gap-0.5 overflow-x-auto rounded-full bg-gray-a2 p-0.5 backdrop-blur-md"
           aria-label={t("labelsNavigation")}
         >
           {tasks.map((task, index) => (
             <button
               key={task.id}
               type="button"
-              className={cn(
-                "size-1 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
-                index === selected ? "scale-100 bg-gray-12" : "scale-75 bg-gray-3",
-              )}
+              className="flex size-2.5 shrink-0 items-center justify-center rounded-full"
               onClick={() => api?.scrollTo(index)}
               aria-label={t("goToLabel", { index: index + 1 })}
               aria-current={index === selected ? "true" : undefined}
-            />
+            >
+              <span
+                className={cn(
+                  "size-0.5 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
+                  index === selected
+                    ? "scale-100 bg-gray-12"
+                    : "scale-75 bg-gray-3",
+                )}
+                aria-hidden
+              />
+            </button>
           ))}
         </div>
       ) : null}
@@ -682,17 +689,22 @@ export function ProjectKanban({
           <button
             key={status}
             type="button"
-            className={cn(
-              "size-1 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
-              index === selectedStatus
-                ? "scale-100 bg-accent-9"
-                : "scale-75 bg-gray-3 hover:scale-100",
-            )}
+            className="flex size-2.5 items-center justify-center rounded-full"
             onClick={() => verticalApi?.scrollTo(index)}
             aria-label={t("goToStatus", { status: tStatuses(status) })}
             aria-current={index === selectedStatus ? "step" : undefined}
             title={tStatuses(status)}
-          />
+          >
+            <span
+              className={cn(
+                "size-0.5 rounded-full border border-gray-8 transition-transform motion-reduce:transition-none",
+                index === selectedStatus
+                  ? "scale-100 bg-accent-9"
+                  : "scale-75 bg-gray-3",
+              )}
+              aria-hidden
+            />
+          </button>
         ))}
       </nav>
 
