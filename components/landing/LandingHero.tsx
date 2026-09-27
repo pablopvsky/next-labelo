@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 
-import { Logo } from "@/components/brand/Logo";
 import Button from "@/components/ui/Button";
 
 export function LandingHero() {
@@ -40,15 +39,12 @@ export function LandingHero() {
         <div className="flex flex-1 flex-col justify-end pb-4 pt-[78px] sm:justify-center sm:pb-6 sm:pt-[91px]">
           <div className="mx-auto w-full max-w-[1032px] px-2">
             <div className="landing-rise flex max-w-[min(100%,28rem)] flex-col gap-1.5 sm:max-w-[min(100%,34rem)]">
-              <div className="flex items-center gap-1">
-                <Logo size="lg" priority alt="" />
-                <h1
-                  id="landing-brand"
-                  className="h1 font-semibold tracking-tight text-gray-12"
-                >
-                  {t("brand")}
-                </h1>
-              </div>
+              <h1
+                id="landing-brand"
+                className="h1 font-semibold tracking-tight text-gray-12"
+              >
+                {t("brand")}
+              </h1>
               <p className="h3 max-w-[22ch] text-balance font-medium tracking-tight text-gray-12">
                 {t("headline")}
               </p>
