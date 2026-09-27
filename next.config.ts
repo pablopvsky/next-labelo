@@ -34,8 +34,8 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Next.js 16 no longer runs ESLint during `next build` (lint is `pnpm lint` only).
-  // Keep it that way: @shadcn/lint stays warn-level and must not gate deploys.
+  // Deploy gate: never run ESLint during build. Next.js 16 removed in-build
+  // lint (`pnpm lint` only). Keep @shadcn/lint at warn and out of `build`.
   ...(resolvedRedirectUri
     ? { env: { NEXT_PUBLIC_WORKOS_REDIRECT_URI: resolvedRedirectUri } }
     : {}),

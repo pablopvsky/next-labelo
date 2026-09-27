@@ -60,7 +60,28 @@
     "notVerified": "Not verified",
     "notSyncedYet": "Not synced yet",
     "syncFooterLabel": "Last synced",
-    "refreshHint": "If something looks out of date, refresh the page after signing in again."
+    "refreshHint": "If something looks out of date, refresh the page after signing in again.",
+    "mcp": {
+      "title": "Personal MCP token",
+      "description": "Create a personal token for Cursor (or other MCP clients) to manage projects and labels on teams you belong to.",
+      "pepperMissing": "Token hashing is not configured. Set LABELO_MCP_TOKEN_PEPPER in the environment, then refresh.",
+      "nameLabel": "Token name",
+      "namePlaceholder": "cursor",
+      "generate": "Generate token",
+      "generating": "Generating…",
+      "copyOnceTitle": "Copy this token now",
+      "copyOnceDescription": "It will not be shown again.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "empty": "No tokens yet.",
+      "created": "Created",
+      "lastUsed": "Last used",
+      "neverUsed": "Never",
+      "revoke": "Revoke token",
+      "revoking": "Revoking…",
+      "nameRequired": "Enter a token name (max 80 characters).",
+      "endpointHint": "MCP endpoint"
+    }
   },
   "onboarding": {
     "brand": "Labelo",

@@ -2,6 +2,6 @@ name: Local
 variables:
   - name: APP_URL
     value: http://localhost:3000
-  # Add auth or API keys per environment (never commit secrets).
-  # - name: API_TOKEN
-  #   value:
+  # Personal MCP token from Profile (never commit secrets).
+  - name: MCP_TOKEN
+    value:

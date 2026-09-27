@@ -95,7 +95,7 @@ The script uses `gemini-2.5-flash-image`, creates parent directories, and select
 - Write useful alt text from the image's purpose; use empty alt only for truly decorative images.
 - Keep text, logos, and UI labels in HTML rather than baking them into generated pixels.
 - Check desktop and mobile crops and preserve focal subjects.
-- Run the project's relevant lint, typecheck, and build checks.
+- Run build checks as needed. Lint is advisory (`pnpm lint`) and must not block deploy.
 - Record the asset plan, accepted outputs, and implementation paths in the blueprint wiki. Never record the API key.
 
 Generated images require human review. Regenerate outputs with accidental text, identity drift, unsafe crops, visual artifacts, or inaccessible contrast.

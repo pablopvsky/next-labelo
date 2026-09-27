@@ -1,0 +1,36 @@
+info:
+  name: MCP Initialize
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{APP_URL}}/api/mcp"
+  headers:
+    - name: Authorization
+      value: "Bearer {{MCP_TOKEN}}"
+      # Personal token from Profile → Personal MCP token
+    - name: Accept
+      value: application/json, text/event-stream
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2024-11-05",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "bruno-labelo",
+            "version": "0.1.0"
+          }
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
