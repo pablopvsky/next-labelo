@@ -4,16 +4,16 @@ date: 2026-09-27
 tags: [dev-log, product, ui]
 ---
 ## Summary
-Marketing home is a Famity-style growth funnel: typographic hero brand (no logo mark), manifesto, three pillars, numbered how-it-works, closing sign-in CTA. Copy lives under `home.*` in `messages/en-US.json` and `messages/es-CO.json`.
+Marketing home is a Famity-style growth funnel wired to Aura components: typographic hero, manifesto with [[Marker]], pillars (Grid + `labels.jpg`), Stepper how-it-works, closing CTA. Copy stays under `home.*` in messages.
 
 ## Context
 - Related: [[Image-Identity]], [[Projects-Kanban]], [[Internal-Progress]]
-- Implementation Path: `app/[locale]/page.tsx`, `components/landing/`, `components/HomeHeader.tsx`, `public/generated/landing/`
+- Implementation Path: `app/[locale]/page.tsx`, `components/landing/`, `components/ui/{Stepper,Marker,Grid,AspectRatio,Separator}.tsx`
 
 ## Sections
-- Hero: `LandingHero` — full-bleed `hero.jpg`, `h1` Labelo wordmark only, outcome line + CTAs
-- Statement: `LandingStatement` — manifesto band on `gray-2`
-- Pillars: `LandingPillars` — projects / status rails / full-screen labels
-- Steps: `LandingSteps` — four numbered steps + `flow.jpg`
-- CTA: `LandingCta` — open workspace → Sign in / Dashboard
-- Motion: `.landing-rise` + `.landing-hero-media` in `app/globals.css` (honors `prefers-reduced-motion`)
+- Hero: `LandingHero` — full-bleed `hero.jpg`, staggered `.landing-rise`, Aura `Button` CTAs
+- Statement: `LandingStatement` — Marker separator + manifesto on `gray-2`
+- Pillars: `LandingPillars` — `labels.jpg` + Aura `Grid` three + icon wells
+- Steps: `LandingSteps` / `LandingStepsList` — Aura vertical `Stepper` + `flow.jpg` in `AspectRatio`
+- CTA: `LandingCta` — accent wash + primary Button with icon
+- Motion: `.landing-rise` delays + `.landing-hero-media` in `app/globals.css`

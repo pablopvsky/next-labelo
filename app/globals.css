@@ -248,6 +248,18 @@ select {
   animation: var(--animate-landing-rise);
 }
 
+.landing-rise[data-delay="1"] {
+  animation-delay: 100ms;
+}
+
+.landing-rise[data-delay="2"] {
+  animation-delay: 200ms;
+}
+
+.landing-rise[data-delay="3"] {
+  animation-delay: 300ms;
+}
+
 .landing-hero-media {
   animation: var(--animate-landing-drift);
   will-change: transform;

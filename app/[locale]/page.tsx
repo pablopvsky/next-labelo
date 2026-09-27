@@ -6,6 +6,7 @@ import { LandingHero } from "@/components/landing/LandingHero";
 import { LandingPillars } from "@/components/landing/LandingPillars";
 import { LandingStatement } from "@/components/landing/LandingStatement";
 import { LandingSteps } from "@/components/landing/LandingSteps";
+import { Separator } from "@/components/ui/Separator";
 
 export default async function HomePage({
   params,
@@ -25,8 +26,9 @@ export default async function HomePage({
         <LandingSteps />
         <LandingCta />
       </main>
-      <footer className="border-t border-gray-6 bg-gray-1">
-        <div className="smush flex h-[52px] items-center px-2">
+      <footer className="bg-gray-1">
+        <Separator />
+        <div className="smush flex h-4 items-center px-2">
           <p className="text-xs text-gray-11">Labelo</p>
         </div>
       </footer>

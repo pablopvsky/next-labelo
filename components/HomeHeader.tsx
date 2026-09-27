@@ -16,7 +16,7 @@ export function HomeHeader() {
     <>
       <LocaleSuggestionBanner />
       <header className="fixed inset-x-0 top-0 z-20 border-b border-gray-6/60 bg-gray-1/70 backdrop-blur-md">
-        <div className="mx-auto flex h-[52px] max-w-[1032px] items-center justify-between gap-2 px-2">
+        <div className="smush flex h-[52px] items-center justify-between gap-2 px-2">
           <a
             href="#main-content"
             className="flex items-center gap-1 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-8"
