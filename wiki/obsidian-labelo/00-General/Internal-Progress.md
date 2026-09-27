@@ -13,5 +13,6 @@ MCP is live for agents: personal tokens on Profile authenticate `/api/mcp` tools
 ## Status
 - Done: Prisma `PersonalAccessToken`; profile create/revoke UI; MCP tools for projects/tasks.
 - Done: OAuth protected-resource metadata route; AuthKit bypass for MCP paths.
+- Done: Lint stays advisory (`warn`) and out of deploy — see [[Agent-Blueprint-Setup]] / `.cursor/rules/shadcn-lint.mdc`.
 - Next: set `LABELO_MCP_TOKEN_PEPPER` in Vercel; connect Cursor to production `/api/mcp`.
 - Next: optional multi-team switcher UI.

@@ -1,16 +1,22 @@
 ---
 alwaysApply: true
 title: shadcn lint
-description: Enforce Aura Tailwind policy with @shadcn/lint (no arbitrary values, no raw colors, no-restyle contracts).
+description: Enforce Aura Tailwind policy with @shadcn/lint (no arbitrary values, no raw colors, no-restyle contracts). Lint is advisory — never a deploy gate.
 ---
 
 # Aura + @shadcn/lint
 
-`@shadcn/lint` is the **machine-checkable** layer for Aura Tailwind policy. Cursor rules and `DESIGN.md` guide agents; lint errors tell them how to fix UI.
+`@shadcn/lint` is the **machine-checkable** layer for Aura Tailwind policy. Cursor rules and `DESIGN.md` guide agents; lint warnings tell them how to fix UI.
 
-## MUST
+## Deploy gate (STRICT)
 
-* **MUST**: After UI changes, run the project `lint` script and fix `@shadcn/lint` findings before finishing.
+* **MUST NOT**: Run ESLint as part of `build`, Vercel deploy, or any CI step that blocks shipping.
+* **MUST NOT**: Treat lint failures as a reason to hold a PR or deployment. `pnpm build` / `next build` must stay lint-free (Next 16 already removed in-build ESLint).
+* **MUST**: Keep `@shadcn/lint` / `aura/*` rules at **`warn`** (not `error`) so local `pnpm lint` stays advisory.
+
+## SHOULD (local quality)
+
+* **SHOULD**: After UI changes, run `pnpm lint` and clean up `@shadcn/lint` findings when practical — without blocking finish or deploy.
 * **MUST**: Prefer theme tokens (`accent-*`, `gray-*`, semantic) over raw palette colors (`bg-pink-500`, hex).
 * **MUST**: Prefer the Aura **13px** spacing scale over arbitrary values (`p-[16px]`).
 * **MUST**: Do not restyle design-system components with padding, colors, or typography via `className` — use **variants/sizes**, or **layout/width** only.
@@ -35,7 +41,7 @@ description: Enforce Aura Tailwind policy with @shadcn/lint (no arbitrary values
 4. Merge the exported config into the app’s `eslint.config.mjs` (see snippet file header).
 5. Set `settings.shadcn.ui` to the project’s UI alias (default `@/components/ui`).
 6. Keep `no-restyle` / `no-arbitrary-values` **off** under `components/ui/**` (components own appearance).
-7. Start rules at **`warn`**; promote to **`error`** as debt clears.
+7. Keep rules at **`warn`**; do **not** promote to `error` while deploys must stay unblocked.
 
 ## SHOULD
 
