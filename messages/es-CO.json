@@ -39,24 +39,52 @@
     "description": "Un hogar calmado para proyectos, rieles de estado y etiquetas a pantalla completa—para equipos y listo para agentes.",
     "ctaPrimary": "Abrir Labelo",
     "ctaSecondary": "Ver cómo funciona",
-    "ctaLoading": "Cargando…",
-    "flow": {
-      "eyebrow": "Cómo funciona",
-      "title": "Los proyectos fluyen de arriba abajo",
-      "description": "Cada proyecto es un riel vertical de estados. Las etiquetas se deslizan a pantalla completa en cada estado para que el trabajo frente a ti sea un pensamiento a la vez.",
-      "imageAlt": "Etiquetas de papel en blanco colgando en un riel vertical junto a la mascota de Labelo"
+    "statement": {
+      "title": "Proyecto. Riel. Etiqueta.",
+      "description": "Un pensamiento a la vez—para todo tu equipo."
     },
-    "labels": {
-      "eyebrow": "La unidad de trabajo",
-      "title": "Las etiquetas tienen el escenario completo",
-      "description": "Escribe, mueve, importa y comparte etiquetas sin un tablero abarrotado. Espacio para pensar y luego entregar.",
-      "imageAlt": "Etiquetas de papel crema abanico sobre un escritorio con fichas suaves naranja y azul"
+    "pillars": {
+      "title": "Trabajen juntos, una etiqueta a la vez",
+      "description": "Tres superficies calmadas que dejan el estado claro sin un tablero abarrotado.",
+      "projects": {
+        "title": "Proyectos",
+        "description": "Apila cada iniciativa en un hogar a pantalla completa. Entra cuando estés listo para enfocarte."
+      },
+      "rails": {
+        "title": "Rieles de estado",
+        "description": "Los estados fluyen de arriba abajo para que el avance se lea como un camino, no como columnas dispersas."
+      },
+      "labels": {
+        "title": "Etiquetas a pantalla completa",
+        "description": "Cada etiqueta tiene el escenario completo—escribe, mueve y entrega sin ruido."
+      }
+    },
+    "steps": {
+      "eyebrow": "Cómo funciona",
+      "title": "Cuatro pasos hacia un tablero más calmado",
+      "description": "Desde el primer inicio de sesión hasta etiquetas que se mueven con tu equipo.",
+      "imageAlt": "Etiquetas de papel en blanco colgando en un riel vertical junto a la mascota de Labelo",
+      "signIn": {
+        "title": "Inicia sesión",
+        "description": "Abre Labelo con tu cuenta y llega a un espacio de trabajo calmado."
+      },
+      "team": {
+        "title": "Crea o únete a un equipo",
+        "description": "Empieza un equipo o ingresa un código de invitación para compartir proyectos."
+      },
+      "project": {
+        "title": "Abre un proyecto",
+        "description": "Elige un proyecto del hogar vertical y entra a su riel de estados."
+      },
+      "labels": {
+        "title": "Mueve etiquetas",
+        "description": "Desliza etiquetas entre estados—un pensamiento a pantalla completa a la vez."
+      }
     },
     "cta": {
       "title": "Abre tu espacio de trabajo",
       "description": "Inicia sesión para crear un equipo, unirte con un código de invitación y empezar a etiquetar.",
-      "action": "Iniciar sesión",
-      "loading": "Cargando…"
+      "action": "Iniciar sesión"
     }
   },
   "dashboard": {

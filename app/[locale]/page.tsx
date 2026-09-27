@@ -2,9 +2,10 @@ import { setRequestLocale } from "next-intl/server";
 
 import { HomeHeader } from "@/components/HomeHeader";
 import { LandingCta } from "@/components/landing/LandingCta";
-import { LandingFlow } from "@/components/landing/LandingFlow";
 import { LandingHero } from "@/components/landing/LandingHero";
-import { LandingLabels } from "@/components/landing/LandingLabels";
+import { LandingPillars } from "@/components/landing/LandingPillars";
+import { LandingStatement } from "@/components/landing/LandingStatement";
+import { LandingSteps } from "@/components/landing/LandingSteps";
 
 export default async function HomePage({
   params,
@@ -19,8 +20,9 @@ export default async function HomePage({
       <HomeHeader />
       <main id="main-content">
         <LandingHero />
-        <LandingFlow />
-        <LandingLabels />
+        <LandingStatement />
+        <LandingPillars />
+        <LandingSteps />
         <LandingCta />
       </main>
       <footer className="border-t border-gray-6 bg-gray-1">
