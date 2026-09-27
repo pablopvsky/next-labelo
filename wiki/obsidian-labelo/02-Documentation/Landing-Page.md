@@ -4,16 +4,17 @@ date: 2026-09-27
 tags: [dev-log, product, ui]
 ---
 ## Summary
-Marketing home is a Famity-style growth funnel wired to Aura components: typographic hero, manifesto with [[Marker]], pillars (Grid + `labels.jpg`), Stepper how-it-works, closing CTA. Copy stays under `home.*` in messages.
+Marketing home uses Neo Mirai–style modular diagramation (split bands, portrait pillars, accent manifesto) filled with Labelo product copy and Famity-kawaii imagery. Accent is Famity sky blue (`#57AEE5`) from `@aura-design/cli colors`.
 
 ## Context
 - Related: [[Image-Identity]], [[Projects-Kanban]], [[Internal-Progress]]
-- Implementation Path: `app/[locale]/page.tsx`, `components/landing/`, `components/ui/{Stepper,Marker,Grid,AspectRatio,Separator}.tsx`
+- Implementation Path: `app/[locale]/page.tsx`, `components/landing/`, `components/HomeHeader.tsx`, `public/generated/landing/`
 
 ## Sections
-- Hero: `LandingHero` — full-bleed `hero.jpg`, staggered `.landing-rise`, Aura `Button` CTAs
-- Statement: `LandingStatement` — Marker separator + manifesto on `gray-2`
-- Pillars: `LandingPillars` — `labels.jpg` + Aura `Grid` three + icon wells
-- Steps: `LandingSteps` / `LandingStepsList` — Aura vertical `Stepper` + `flow.jpg` in `AspectRatio`
-- CTA: `LandingCta` — accent wash + primary Button with icon
-- Motion: `.landing-rise` delays + `.landing-hero-media` in `app/globals.css`
+- Header: `HomeHeader` — logo, section anchors, Sign in
+- Hero: `LandingHero` — full-bleed `hero.jpg`, brand-first Labelo copy + CTAs
+- Flow: `LandingSteps` — dark how-it-works rail + vertical tag strip + `flow.jpg`
+- Surfaces: `LandingPillars` — three kawaii portrait panels + outlined “Surfaces” panel
+- Statement: `LandingStatement` — blue accent manifesto band + `manifesto.jpg`
+- CTA: `LandingCta` — workspace open + accent aside
+- Motion: `.landing-rise` / `.landing-hero-media` in `app/globals.css` (honors `prefers-reduced-motion`)

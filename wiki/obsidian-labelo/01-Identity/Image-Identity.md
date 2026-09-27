@@ -19,7 +19,7 @@ Labelo imagery is soft studio photography mixed with flat sticker-like illustrat
 
 ### Palette & lighting
 - Brand anchors: warm orange (~`#F6A036`), sky blue (~`#57AEE5` / `#97D7F3`), thick black outlines, off-white paper surfaces.
-- Align UI chrome with Aura gray 1–2 backgrounds and black primary (`--accent-9`); keep photographic blues/oranges in imagery only.
+- Align UI chrome with Aura gray 1–2 backgrounds and Famity sky-blue primary (`--accent-9` ≈ `#57AEE5` via `pnpm dlx @aura-design/cli@latest colors`); keep orange in the mascot face only.
 - Lighting: soft north-facing daylight, low contrast, no hard rim lights or purple gradients.
 
 ### Composition / motifs
@@ -31,6 +31,12 @@ Labelo imagery is soft studio photography mixed with flat sticker-like illustrat
 - No baked-in UI text, logos, watermarks, or readable app chrome in pixels.
 - No purple/indigo glow, cream-and-terracotta editorial clichés, dense newspaper layouts, or dark neon dashboards.
 - No extra mascots or competing characters.
+
+## Asset set (landing diagram)
+- `public/generated/landing/hero.jpg` — full-bleed hero, subject right
+- `public/generated/landing/flow.jpg` — how-it-works image panel
+- `public/generated/landing/pillar-*.jpg` — Projects / Rails / Labels portraits
+- `public/generated/landing/manifesto.jpg` — statement band image
 
 ## Notes
 Native agent image generation used when `GOOGLE_API_KEY` / `GEMINI_API_KEY` is unset. Regenerate if accidental text or identity drift appears.

@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 
-import { Section } from "@/components/ui/Section";
 import Button from "@/components/ui/Button";
 
 export function LandingCta() {
@@ -13,30 +12,42 @@ export function LandingCta() {
   const { user } = useAuth();
 
   return (
-    <Section
+    <section
       id="open"
-      container="smash"
-      className="relative overflow-hidden bg-gray-1"
-      subClassName="landing-rise relative z-10"
+      className="landing-diagram-row landing-cta-grid"
+      aria-labelledby="landing-cta-title"
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_0%_50%,var(--accent-a4),transparent_55%),radial-gradient(ellipse_at_100%_100%,var(--gray-a3),transparent_50%)]"
-        aria-hidden
-      />
-      <div className="relative flex flex-col items-start gap-1.5">
-        <h2 className="h3 max-w-[18ch] text-balance font-medium tracking-tight text-gray-12">
+      <div className="flex flex-col justify-center gap-1.5 bg-gray-1 px-2 py-3 sm:px-3 md:py-4">
+        <p className="landing-kicker text-accent-11">{t("eyebrow")}</p>
+        <h2
+          id="landing-cta-title"
+          className="h3 max-w-xs text-balance font-medium tracking-tight text-gray-12"
+        >
           {t("title")}
         </h2>
-        <p className="max-w-[40ch] text-balance text-gray-11">{t("description")}</p>
-        <div className="mt-0.5">
+        <p className="max-w-md text-balance text-gray-11">{t("description")}</p>
+        <div className="mt-1">
           <Button asChild size="lg">
             <a href={user ? "/dashboard" : "/login"}>
               {user ? tHeader("dashboard") : t("action")}
-              <ArrowRightIcon className="icon" aria-hidden />
+              <ArrowRightIcon className="icon" />
             </a>
           </Button>
         </div>
       </div>
-    </Section>
+
+      <div className="flex flex-col items-center justify-center gap-2 bg-accent-9 px-2 py-3 text-center text-accent-contrast md:py-4">
+        <p className="h4 max-w-xs text-balance font-medium tracking-tight">
+          {t("aside")}
+        </p>
+        <a
+          href={user ? "/dashboard" : "/login"}
+          className="landing-cta-orb"
+          aria-label={user ? tHeader("dashboard") : t("action")}
+        >
+          <ArrowRightIcon className="icon h4" />
+        </a>
+      </div>
+    </section>
   );
 }
