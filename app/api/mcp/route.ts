@@ -4,6 +4,9 @@ import { verifyMcpBearerToken } from "@/lib/mcp/auth";
 import { registerLabeloMcpTools } from "@/lib/mcp/register-tools";
 import { MCP_READ_SCOPE } from "@/lib/mcp/tokens";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 const handler = createMcpHandler(
   (server) => {
     registerLabeloMcpTools(server);
