@@ -6,7 +6,8 @@ This Obsidian vault lives at **`wiki/obsidian-labelo`** inside the repo wiki.
 
 1. Read [[Bootstrap]] for how to document the product with AI assistance.
 2. Pair with the Bruno collection at **`wiki/bruno-labelo`** for API truth (HTTP methods, URLs, payloads).
-3. Current domain overview: [[Teams-Data-Model]], [[Onboarding]], [[Projects-Kanban]], [[Server-Actions]], [[Input-Font-Size]], [[PWA-Pull-Refresh]], [[Internal-Progress]].
+3. Brand imagery: [[Image-Identity]] (`status: needs-definition` until style/palette/motifs/exclusions are concrete).
+4. Current domain overview: [[Teams-Data-Model]], [[Onboarding]], [[Projects-Kanban]], [[Server-Actions]], [[Input-Font-Size]], [[PWA-Pull-Refresh]], [[Internal-Progress]].
 
 ## Suggested structure
 
