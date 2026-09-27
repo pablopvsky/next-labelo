@@ -11,6 +11,8 @@ Home and project boards now share the same fullscreen overlay navigation. Home i
 - Implementation Path: `components/projects/ProjectHome.tsx`, `components/projects/ProjectKanban.tsx`
 
 ## Status
+- In progress: Famity AuthKit login — Production uses Famity Labelo `WORKOS_CLIENT_ID`; ensure `WORKOS_API_KEY` is from Famity Care Production (not Garitma) or callback fails after AuthKit.
+- Note: AuthKit logo stays Famity (env branding); Labelo PWA mark is separate. Per-app AuthKit branding not enabled.
 - Done: Slide safe area mirrors the rail reservation on both inline sides, so titles center on the viewport; the label title opens the actions drawer.
 - Done: Home project list uses the same Embla y-axis overlay as the board (dots, wheel/keyboard, top-right ⋯ for create/delete).
 - Done: Prisma `Team` / `TeamMember` / `Project` / `Task`; create/join onboarding.
