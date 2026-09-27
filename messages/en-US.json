@@ -39,31 +39,47 @@
     "description": "A calm home for projects, status rails, and full-screen labels—built for teams and ready for agents.",
     "ctaPrimary": "Open Labelo",
     "ctaSecondary": "See how it works",
+    "verticalTag": "Project · Rail · Label",
+    "nav": {
+      "ariaLabel": "Landing sections",
+      "features": "Features",
+      "howItWorks": "How it works",
+      "open": "Open"
+    },
     "statement": {
+      "eyebrow": "Together",
       "title": "Project. Rail. Label.",
-      "description": "One thought at a time—for your whole team."
+      "description": "One thought at a time—for your whole team.",
+      "action": "Open Labelo",
+      "imageAlt": "Paper labels and the Labelo mascot in soft studio light"
     },
     "pillars": {
+      "panelTitle": "Surfaces",
       "title": "Work together, one label at a time",
       "description": "Three calm surfaces that keep status clear without a crowded board.",
-      "imageAlt": "Stacks of blank paper labels with soft blue and orange accents on a stone desk",
+      "viewAll": "See the flow",
       "projects": {
         "title": "Projects",
-        "description": "Stack every initiative in a full-viewport home. Tap in when you are ready to focus."
+        "description": "Stack every initiative in a full-viewport home. Tap in when you are ready to focus.",
+        "imageAlt": "Stacked project sheets beside the Labelo mascot"
       },
       "rails": {
         "title": "Status rails",
-        "description": "Statuses flow top to bottom so progress reads as a path, not a scatter of columns."
+        "description": "Statuses flow top to bottom so progress reads as a path, not a scatter of columns.",
+        "imageAlt": "Blank labels hanging on a vertical rail with the Labelo mascot"
       },
       "labels": {
         "title": "Full-screen labels",
-        "description": "Each label gets the whole stage—write, move, and ship without the noise."
+        "description": "Each label gets the whole stage—write, move, and ship without the noise.",
+        "imageAlt": "A large blank paper label with the Labelo mascot sticker"
       }
     },
     "steps": {
       "eyebrow": "How it works",
       "title": "Four steps to a calmer board",
       "description": "From first sign-in to labels that move with your team.",
+      "stepLabel": "Step {n}",
+      "viewAll": "Open your workspace",
       "imageAlt": "Blank paper labels hanging in a vertical rail beside the Labelo mascot",
       "signIn": {
         "title": "Sign in",
@@ -83,9 +99,11 @@
       }
     },
     "cta": {
+      "eyebrow": "Ready",
       "title": "Open your workspace",
       "description": "Sign in to create a team, join with an invite, and start labeling.",
-      "action": "Sign in"
+      "action": "Sign in",
+      "aside": "Start labeling"
     }
   },
   "dashboard": {
