@@ -44,25 +44,19 @@ export function LandingHero() {
               </p>
               <h1
                 id="landing-brand"
-                className="landing-rise h1 font-semibold tracking-tight text-gray-12"
-              >
-                {t("brand")}
-              </h1>
-              <p
-                className="landing-rise h3 max-w-xs text-balance font-medium tracking-tight text-gray-12"
-                data-delay="1"
+                className="landing-rise h1 max-w-xs text-balance font-semibold tracking-tight text-gray-12"
               >
                 {t("headline")}
-              </p>
+              </h1>
               <p
                 className="landing-rise max-w-sm text-balance text-gray-11"
-                data-delay="2"
+                data-delay="1"
               >
                 {t("description")}
               </p>
               <div
                 className="landing-rise mt-1 flex flex-wrap items-center gap-1"
-                data-delay="3"
+                data-delay="2"
               >
                 <Button asChild size="lg">
                   <a href={user ? "/dashboard" : "/login"}>

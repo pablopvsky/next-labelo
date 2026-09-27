@@ -12,7 +12,7 @@ Marketing home uses Neo Mirai–style modular diagramation (split bands, portrai
 
 ## Sections
 - Header: `HomeHeader` — logo, section anchors, Sign in
-- Hero: `LandingHero` — full-bleed `hero.jpg`, brand-first Labelo copy + CTAs
+- Hero: `LandingHero` — full-bleed `hero.jpg`, outcome headline as `h1` (Labelo mark stays in header) + CTAs
 - Flow: `LandingSteps` — dark how-it-works rail + vertical tag strip + `flow.jpg`
 - Surfaces: `LandingPillars` — three kawaii portrait panels + outlined “Surfaces” panel
 - Statement: `LandingStatement` — blue accent manifesto band + `manifesto.jpg`
