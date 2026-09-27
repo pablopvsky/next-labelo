@@ -29,3 +29,8 @@ Labelo signs in through WorkOS AuthKit in the **Famity Care Production** environ
 - Famity already owns that environment branding (orange buttons + mark). Change it in WorkOS Branding if needed; it updates both apps' AuthKit screens.
 - Labelo's in-app / PWA mark (`public/brand/logo.png`, `public/icons/*`) is independent of AuthKit.
 - Different AuthKit logos + shared users requires a self-hosted AuthKit UI, not a second environment (that would split users).
+
+## User id remaps
+- AuthKit **applications** share the environment user pool; user ids do not change when adding the Labelo app.
+- Moving Labelo from Garitma → Famity leaves stale `workos_user_id` values in Postgres. See [[WorkOS-User-Remap]].
+- `upsertUserFromWorkOS` remaps by email when the WorkOS id is new, so login does not orphan teams.
