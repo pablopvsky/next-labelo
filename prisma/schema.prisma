@@ -26,8 +26,25 @@ model User {
 
   memberships TeamMember[]
   createdTeams Team[]      @relation("TeamCreator")
+  personalAccessTokens PersonalAccessToken[]
 
   @@map("users")
+}
+
+/// Hashed personal access token for MCP / API clients (e.g. Cursor).
+model PersonalAccessToken {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  name        String
+  tokenHash   String    @unique @map("token_hash")
+  tokenPrefix String    @map("token_prefix")
+  scopes      String[]  @default(["mcp:read", "mcp:write"])
+  lastUsedAt  DateTime? @map("last_used_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("personal_access_tokens")
 }
 
 enum TeamRole {

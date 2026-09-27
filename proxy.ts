@@ -21,6 +21,15 @@ function authkitOptions(request: NextRequest) {
   return { redirectUri: getWorkOSRedirectUri(request.url) };
 }
 
+function isMcpPublicRoute(pathname: string): boolean {
+  return (
+    pathname === "/api/mcp" ||
+    pathname.startsWith("/api/mcp/") ||
+    pathname === "/.well-known/oauth-protected-resource" ||
+    pathname.startsWith("/.well-known/oauth-protected-resource/")
+  );
+}
+
 function isAuthOrApiRoute(pathname: string): boolean {
   return (
     pathname.startsWith("/api") ||
@@ -80,6 +89,11 @@ function continueWithIntl(
 
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Bearer-token MCP + OAuth resource metadata must not go through AuthKit/i18n.
+  if (isMcpPublicRoute(pathname)) {
+    return NextResponse.next();
+  }
 
   if (isAuthOrApiRoute(pathname)) {
     const result = await safeAuthkit(request);

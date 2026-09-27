@@ -60,7 +60,28 @@
     "notVerified": "No verificado",
     "notSyncedYet": "Aún no sincronizado",
     "syncFooterLabel": "Última sincronización",
-    "refreshHint": "Si algo se ve desactualizado, vuelve a iniciar sesión y actualiza la página."
+    "refreshHint": "Si algo se ve desactualizado, vuelve a iniciar sesión y actualiza la página.",
+    "mcp": {
+      "title": "Token personal MCP",
+      "description": "Crea un token personal para Cursor (u otros clientes MCP) y gestiona proyectos y etiquetas en los equipos a los que perteneces.",
+      "pepperMissing": "El hash de tokens no está configurado. Define LABELO_MCP_TOKEN_PEPPER en el entorno y actualiza.",
+      "nameLabel": "Nombre del token",
+      "namePlaceholder": "cursor",
+      "generate": "Generar token",
+      "generating": "Generando…",
+      "copyOnceTitle": "Copia este token ahora",
+      "copyOnceDescription": "No se volverá a mostrar.",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "empty": "Aún no hay tokens.",
+      "created": "Creado",
+      "lastUsed": "Último uso",
+      "neverUsed": "Nunca",
+      "revoke": "Revocar token",
+      "revoking": "Revocando…",
+      "nameRequired": "Escribe un nombre de token (máx. 80 caracteres).",
+      "endpointHint": "Endpoint MCP"
+    }
   },
   "onboarding": {
     "brand": "Labelo",
