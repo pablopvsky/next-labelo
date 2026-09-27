@@ -7,11 +7,13 @@ tags: [dev-log, progress]
 Home and project boards now share the same fullscreen overlay navigation. Home is a y-axis project list with account on the top left, ⋯ actions on the top right, and tap-to-enter. Inside a project, statuses stay on the y-axis and labels on the x-axis.
 
 ## Context
-- Related: [[Teams-Data-Model]], [[Onboarding]], [[Projects-Kanban]], [[Delete-Projects-Labels]], [[Task-Import-Export]], [[Input-Font-Size]], [[PWA-Pull-Refresh]], [[Agent-Blueprint-Setup]], [[Image-Identity]]
+- Related: [[Teams-Data-Model]], [[Onboarding]], [[Projects-Kanban]], [[Delete-Projects-Labels]], [[Task-Import-Export]], [[Input-Font-Size]], [[PWA-Pull-Refresh]], [[Agent-Blueprint-Setup]], [[Image-Identity]], [[Vercel-Analytics]], [[Famity-Auth]]
 - Implementation Path: `components/projects/ProjectHome.tsx`, `components/projects/ProjectKanban.tsx`
 
 ## Status
 - Done: Aura MCP agent blueprint — skills, `.cursor/mcp.json` (shadcn), `@shadcn/lint` at warn, [[Image-Identity]] scaffold, `pnpm ai:image`. Deploy does **not** require lint to pass.
+- In progress: Famity AuthKit login — Production uses Famity Labelo `WORKOS_CLIENT_ID`; ensure `WORKOS_API_KEY` is from Famity Care Production (not Garitma) or callback fails after AuthKit.
+- Note: AuthKit logo stays Famity (env branding); Labelo PWA mark is separate. Per-app AuthKit branding not enabled.
 - Done: Slide safe area mirrors the rail reservation on both inline sides, so titles center on the viewport; the label title opens the actions drawer.
 - Done: Home project list uses the same Embla y-axis overlay as the board (dots, wheel/keyboard, top-right ⋯ for create/delete).
 - Done: Prisma `Team` / `TeamMember` / `Project` / `Task`; create/join onboarding.
@@ -19,5 +21,6 @@ Home and project boards now share the same fullscreen overlay navigation. Home i
 - Done: Board safe area and top-left back arrow.
 - Done: Project backlog toggle — `backlog` status, list view, promote-to-`requerimiento` only.
 - Done: Label JSON [[Task-Import-Export]]; PWA + pull-to-refresh; 17px form controls.
+- Done: [[Vercel-Analytics]] — `@vercel/analytics` in root layout (`app/layout.tsx`).
 - Verification: pending browser pass of home carousel tap-to-enter and board back-to-home.
-- Next: optional multi-team switcher UI; define [[Image-Identity]] before brand image generation; enable shadcn MCP in Cursor Settings; offer `/add-plugin pstack` → `/setup-pstack` on desktop.
+- Next: optional multi-team switcher UI; define [[Image-Identity]] before brand image generation; enable shadcn MCP in Cursor Settings; offer `/add-plugin pstack` → `/setup-pstack` on desktop; deploy so Analytics collects production traffic.

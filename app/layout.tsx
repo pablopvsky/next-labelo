@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
+import { Analytics } from "@vercel/analytics/next";
 
 import { PullToRefresh } from "@/components/pwa/PullToRefresh";
 
@@ -77,6 +78,7 @@ export default async function RootLayout({
             {children}
           </AuthKitProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
