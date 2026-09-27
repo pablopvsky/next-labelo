@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Labelo",
-    "description": "Labelo — organize labels and workflows for your team."
+    "description": "Labelo — calm projects, status rails, and full-screen labels for teams and agents."
   },
   "common": {
     "skipToContent": "Skip to main content",
@@ -33,8 +33,31 @@
     "dashboard": "Dashboard"
   },
   "home": {
+    "brand": "Labelo",
     "title": "Welcome to Labelo",
-    "description": "A calm home for your labels and workflows. Sign in to open your workspace."
+    "headline": "Labels that move with your work",
+    "description": "A calm home for projects, status rails, and full-screen labels—built for teams and ready for agents.",
+    "ctaPrimary": "Open Labelo",
+    "ctaSecondary": "See how it works",
+    "ctaLoading": "Loading…",
+    "flow": {
+      "eyebrow": "How it works",
+      "title": "Projects flow top to bottom",
+      "description": "Each project is a vertical status rail. Labels slide full-screen across each status so the work in front of you stays one thought at a time.",
+      "imageAlt": "Blank paper labels hanging in a vertical rail beside the Labelo mascot"
+    },
+    "labels": {
+      "eyebrow": "The unit of work",
+      "title": "Labels get the whole stage",
+      "description": "Write, move, import, and share labels without a crowded board. Space to think, then ship.",
+      "imageAlt": "Blank cream paper labels fanned on a desk with soft orange and blue color chips"
+    },
+    "cta": {
+      "title": "Open your workspace",
+      "description": "Sign in to create a team, join with an invite, and start labeling.",
+      "action": "Sign in",
+      "loading": "Loading…"
+    }
   },
   "dashboard": {
     "title": "Dashboard",

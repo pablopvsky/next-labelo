@@ -15,18 +15,21 @@ export function HomeHeader() {
   return (
     <>
       <LocaleSuggestionBanner />
-      <header className="border-b border-gray-6 bg-gray-1/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-2 h-[52px] flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1">
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-20">
+        <div className="smush pointer-events-auto flex h-[52px] items-center justify-between gap-2 px-2">
+          <a
+            href="#main-content"
+            className="flex items-center gap-1 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-8"
+          >
             <Logo priority />
-            <span className="font-semibold text-sm tracking-tight">
+            <span className="text-sm font-semibold tracking-tight text-gray-12">
               {tCommon("labelo")}
             </span>
-          </div>
-          <div className="flex items-center gap-2">
+          </a>
+          <div className="flex items-center gap-1">
             {loading ? (
               <span
-                className="cursor-progress text-gray-11 text-sm"
+                className="cursor-progress text-sm text-gray-11"
                 role="status"
                 aria-live="polite"
               >
