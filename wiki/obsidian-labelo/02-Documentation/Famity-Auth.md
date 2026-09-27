@@ -17,6 +17,8 @@ Labelo signs in through WorkOS AuthKit in the **Famity Care Production** environ
 - Redirect URIs on the Labelo app: `https://www.labelo.space/callback`, `https://labelo.space/callback`
 - Famity default app also accepts Labelo callbacks as a fallback if Production uses Famity's client ID
 
+Local template: `env.workos.example` (copy values into `.env.local`).
+
 ## Required Vercel Production env
 - `WORKOS_CLIENT_ID` = Labelo app client above
 - `WORKOS_API_KEY` = API key created under **that same Famity Care Production environment** (ideally on the Labelo application). A Garitma key makes AuthKit open but `/callback` fail with "Couldn't sign in".
