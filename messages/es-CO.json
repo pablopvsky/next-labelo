@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Labelo",
-    "description": "Labelo — organiza etiquetas y flujos de trabajo para tu equipo."
+    "description": "Labelo — proyectos calmados, rieles de estado y etiquetas a pantalla completa para equipos y agentes."
   },
   "common": {
     "skipToContent": "Saltar al contenido principal",
@@ -33,8 +33,31 @@
     "dashboard": "Panel"
   },
   "home": {
+    "brand": "Labelo",
     "title": "Bienvenido a Labelo",
-    "description": "Un espacio tranquilo para tus etiquetas y flujos. Inicia sesión para abrir tu espacio de trabajo."
+    "headline": "Etiquetas que se mueven con tu trabajo",
+    "description": "Un hogar calmado para proyectos, rieles de estado y etiquetas a pantalla completa—para equipos y listo para agentes.",
+    "ctaPrimary": "Abrir Labelo",
+    "ctaSecondary": "Ver cómo funciona",
+    "ctaLoading": "Cargando…",
+    "flow": {
+      "eyebrow": "Cómo funciona",
+      "title": "Los proyectos fluyen de arriba abajo",
+      "description": "Cada proyecto es un riel vertical de estados. Las etiquetas se deslizan a pantalla completa en cada estado para que el trabajo frente a ti sea un pensamiento a la vez.",
+      "imageAlt": "Etiquetas de papel en blanco colgando en un riel vertical junto a la mascota de Labelo"
+    },
+    "labels": {
+      "eyebrow": "La unidad de trabajo",
+      "title": "Las etiquetas tienen el escenario completo",
+      "description": "Escribe, mueve, importa y comparte etiquetas sin un tablero abarrotado. Espacio para pensar y luego entregar.",
+      "imageAlt": "Etiquetas de papel crema abanico sobre un escritorio con fichas suaves naranja y azul"
+    },
+    "cta": {
+      "title": "Abre tu espacio de trabajo",
+      "description": "Inicia sesión para crear un equipo, unirte con un código de invitación y empezar a etiquetar.",
+      "action": "Iniciar sesión",
+      "loading": "Cargando…"
+    }
   },
   "dashboard": {
     "title": "Panel",

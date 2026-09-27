@@ -1,0 +1,20 @@
+{
+  "identity": "wiki/obsidian-labelo/01-Identity/Image-Identity.md",
+  "images": [
+    {
+      "prompt": "Wide editorial hero photograph, soft daylight studio. Stack of blank cream paper labels and a calm workspace table surface, subject weighted to the lower right third. Clean empty negative space on the left and upper third for overlay typography. Include the Labelo mascot once as a small flat sticker-like companion near the labels: orange circular smiling face, five sky-blue pointed petals on top, three light-blue tentacle legs below, thick black outlines, tiny droplet accents. Shallow depth of field, off-white and soft blue atmosphere, no text, no UI, no logos baked in.",
+      "output": "public/generated/landing/hero",
+      "aspectRatio": "16:9"
+    },
+    {
+      "prompt": "Vertical editorial still life of a status workflow as physical paper label sheets hanging in a soft vertical rail, cream paper on pale gray-blue background. Soft daylight, calm and tactile. Tiny Labelo mascot sticker (orange face, blue petals and tentacles, black outline) peeking at the bottom edge. No readable text on papers, no UI chrome, no logos.",
+      "output": "public/generated/landing/flow",
+      "aspectRatio": "4:5"
+    },
+    {
+      "prompt": "Close editorial photograph of blank paper labels fanned on a desk with soft blue and warm orange color chips nearby, shallow depth of field. Atmosphere only — no mascot required. Clean, calm, tactile. No text, no logos, no UI.",
+      "output": "public/generated/landing/labels",
+      "aspectRatio": "3:2"
+    }
+  ]
+}

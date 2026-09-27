@@ -4,15 +4,15 @@ date: 2026-09-27
 tags: [dev-log, progress]
 ---
 ## Summary
-MCP is live for agents: personal tokens on Profile authenticate `/api/mcp` tools that list and manage projects and labels. Peppered token hashes use `LABELO_MCP_TOKEN_PEPPER`.
+Marketing landing presents Labelo with generated brand imagery and i18n copy. MCP remains live for agents via personal tokens on Profile.
 
 ## Context
-- Related: [[MCP-Personal-Tokens]], [[Teams-Data-Model]], [[Projects-Kanban]], [[Onboarding]]
-- Implementation Path: `app/api/mcp/route.ts`, `components/dashboard/AccountMcpTokensCard.tsx`
+- Related: [[Landing-Page]], [[Image-Identity]], [[MCP-Personal-Tokens]], [[Projects-Kanban]]
+- Implementation Path: `app/[locale]/page.tsx`, `components/landing/`, `public/generated/landing/`
 
 ## Status
+- Done: Full-bleed hero + flow/labels/CTA sections; Image-Identity set to `ready`.
 - Done: Prisma `PersonalAccessToken`; profile create/revoke UI; MCP tools for projects/tasks.
-- Done: OAuth protected-resource metadata route; AuthKit bypass for MCP paths.
 - Done: Lint stays advisory (`warn`) and out of deploy — see [[Agent-Blueprint-Setup]] / `.cursor/rules/shadcn-lint.mdc`.
 - Next: set `LABELO_MCP_TOKEN_PEPPER` in Vercel; connect Cursor to production `/api/mcp`.
 - Next: optional multi-team switcher UI.
